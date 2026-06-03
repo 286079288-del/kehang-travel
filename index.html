@@ -8458,12 +8458,11 @@ function saveScheduleItems() {
 
   localStorage.setItem(SCHEDULE_KEY, JSON.stringify(scheduleItems));
 
-  // 不再自动上传，需要用户手动点「⬆️ 上传」按钮
-
-  // 同步项目安排到日历面板（itinerary）
-  init();
-
-syncScheduleToCalendar();
+  // 同步项目安排到日历面板（itinerary），然后刷新日历视图
+  syncScheduleToCalendar();
+  renderCalendar();
+  renderDayDetail();
+  updateItineraryStats();
 
   triggerAutoSync();
 
