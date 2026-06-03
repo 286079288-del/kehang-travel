@@ -12,17 +12,22 @@
 
 <!-- Leaflet CSS -->
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 
 <!-- Leaflet JS -->
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+// Fallback: if BootCDN blocked, try unpkg
+(function(){if(typeof L==='undefined'){var s=document.createElement('script');s.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';document.head.appendChild(s);var l=document.createElement('link');l.rel='stylesheet';l.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';document.head.appendChild(l);}})();
+</script>
 
 <!-- Supabase Cloud DB (REST API, no SDK needed) -->
 
 <style>
 
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+  /* Google Fonts blocked in China, use system fonts */
+  body { font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif; }
 
 
 
@@ -5263,6 +5268,12 @@ let mapLayers = {};
 // ===== Init =====
 
 function init() {
+  // Safety: if Leaflet failed to load after CDN + fallback, show a clear message
+  if (typeof L === 'undefined') {
+    var mc = document.getElementById('mapContainer');
+    if (mc) mc.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-secondary);font-size:18px;">⚠️ 地图库加载失败，请刷新页面重试<br><small style="font-size:13px;color:var(--text-muted);">若多次出现，请检查网络连接</small></div>';
+    return;
+  }
 
   createStars();
 
