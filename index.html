@@ -2080,17 +2080,15 @@
 
   .visibility-toggle {
 
-    margin-left: auto; margin-right: 6px; font-size: 11px; opacity: 0.3;
+    margin-left: auto; margin-right: 6px; cursor: pointer; transition: opacity 0.2s;
 
-    cursor: pointer; transition: opacity 0.2s; padding: 2px 4px; border-radius: 4px;
-
-    background: none; border: none; line-height: 1;
+    background: none; border: none; line-height: 1; padding: 0;
 
   }
 
-  .visibility-toggle:hover { opacity: 0.7; }
+  .visibility-toggle:hover { opacity: 0.8; }
 
-  .visibility-toggle.hidden { opacity: 0.2; }
+  .visibility-toggle.hidden { opacity: 0.6; }
 
 
 
@@ -9025,7 +9023,7 @@ function renderSection(list, type, titleText, items, titleClass) {
 
   title.className = `list-section-title ${titleClass} ${window.sectionCollapsed?.[type] ? 'collapsed' : ''}`;
 
-  title.innerHTML = `${titleText} <span class="section-count">${items.length}</span><button class="visibility-toggle ${isHidden ? 'hidden' : ''}" title="${isHidden ? '显示地图标注' : '隐藏地图标注'}" onclick="event.stopPropagation(); toggleTypeVisibility('${type}');">${isHidden ? '<span style="color:rgba(255,255,255,0.2);">⊙</span>' : '<span style="color:#00d4ff;">●</span>'}</button><span class="collapse-icon">▼</span>`;
+  title.innerHTML = `${titleText} <span class="section-count">${items.length}</span><button class="visibility-toggle ${isHidden ? 'hidden' : ''}" title="${isHidden ? '显示地图标注' : '隐藏地图标注'}" onclick="event.stopPropagation(); toggleTypeVisibility('${type}');">${isHidden ? '<span style="display:inline-block;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.25);padding:1px 7px;border-radius:3px;font-size:10px;font-weight:500;letter-spacing:0.5px;">隐藏</span>' : '<span style="display:inline-block;background:rgba(0,212,255,0.12);color:rgba(0,212,255,0.85);padding:1px 7px;border-radius:3px;font-size:10px;font-weight:500;letter-spacing:0.5px;">可见</span>'}</button><span class="collapse-icon">▼</span>`;
 
   list.appendChild(title);
 
