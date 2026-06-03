@@ -8459,10 +8459,12 @@ function saveScheduleItems() {
   localStorage.setItem(SCHEDULE_KEY, JSON.stringify(scheduleItems));
 
   // 同步项目安排到日历面板（itinerary），然后刷新日历视图
-  syncScheduleToCalendar();
-  renderCalendar();
-  renderDayDetail();
-  updateItineraryStats();
+  try {
+    syncScheduleToCalendar();
+    renderCalendar();
+    renderDayDetail();
+    updateItineraryStats();
+  } catch(e) { console.warn('syncScheduleToCalendar error:', e); }
 
   triggerAutoSync();
 
@@ -8845,7 +8847,6 @@ function saveScheduleItem() {
   saveScheduleItems();
 
   closeScheduleItemModal();
-
   renderProjectSchedule();
 
 }
