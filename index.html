@@ -10147,11 +10147,33 @@ function toggleMobilePanel(panel) {
     document.querySelector('.left-panel').classList.remove('mobile-show');
     document.querySelector('.footprint-panel').classList.remove('mobile-show');
   }
-    // 延迟渲染标记（等地图就绪）
-    setTimeout(function() {
-      if (typeof renderAllMarkers === 'function') renderAllMarkers();
-    }, 1000);
-  })();
+})();
+
+// ===== 页面初始化入口 =====
+(function startApp() {
+  // 等待 Leaflet 加载就绪后执行 init
+  function tryInit() {
+    if (typeof L !== 'undefined') {
+      init();
+    } else {
+      // CDN 还没加载完，每 200ms 重试，最多 10 秒
+      var retries = 0;
+      var timer = setInterval(function() {
+        retries++;
+        if (typeof L !== 'undefined') {
+          clearInterval(timer);
+          init();
+        } else if (retries > 50) {
+          clearInterval(timer);
+          var mc = document.getElementById('mapContainer');
+          if (mc) mc.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-secondary);font-size:18px;">⚠️ 地图库加载失败<br><small style="font-size:13px;">请检查网络后刷新页面</small></div>';
+          document.getElementById('loading').classList.add('hidden');
+        }
+      }, 200);
+    }
+  }
+  tryInit();
+})();
 </script>
 
 </body>
