@@ -2165,6 +2165,7 @@
   .fp-badge.upcoming-badge { background: rgba(255,215,0,0.12); color: rgba(255,215,0,0.7); }
 
   .fp-badge.project-badge { background: rgba(255,71,87,0.15); color: rgba(255,71,87,0.9); }
+  .fp-badge.completed-badge { background: rgba(46,213,115,0.15); color: rgba(46,213,115,0.9); }
 
   .fp-actions { display: flex; gap: 4px; }
 
@@ -2303,6 +2304,7 @@
   .custom-popup.upcoming-popup { border-left: 3px solid #ffd700; }
 
   .custom-popup.project-popup { border-left: 3px solid #ff4757; }
+  .custom-popup.completed-popup { border-left: 3px solid #2ed573; }
 
   .popup-header {
 
@@ -2445,6 +2447,7 @@
   .marker-dot.upcoming-dot { background: linear-gradient(135deg, #ffd700, #ffaa00); box-shadow: 0 0 20px rgba(255,215,0,0.5); }
 
   .marker-dot.project-dot { background: linear-gradient(135deg, #ff4757, #ff6b81); box-shadow: 0 0 24px rgba(255,71,87,0.6); }
+  .marker-dot.completed-dot { background: linear-gradient(135deg, #2ed573, #7bed9f); box-shadow: 0 0 24px rgba(46,213,115,0.6); }
 
   .marker-ring {
 
@@ -2461,6 +2464,7 @@
   .marker-ring.upcoming-ring { border: 2px solid rgba(255,215,0,0.4); }
 
   .marker-ring.project-ring { border: 2px solid rgba(255,71,87,0.5); animation: projectPulse1 1.5s ease-out infinite; }
+  .marker-ring.completed-ring { border: 2px solid rgba(46,213,115,0.5); animation: completedPulse1 1.5s ease-out infinite; }
 
   .marker-ring2 {
 
@@ -2477,6 +2481,7 @@
   .marker-ring2.upcoming-ring2 { border: 1px solid rgba(255,170,0,0.3); }
 
   .marker-ring2.project-ring2 { border: 1px solid rgba(255,107,129,0.3); animation: projectPulse2 1.5s 0.5s ease-out infinite; }
+  .marker-ring2.completed-ring2 { border: 1px solid rgba(46,213,115,0.3); animation: completedPulse2 1.5s 0.5s ease-out infinite; }
 
 
 
@@ -2549,6 +2554,7 @@
   .marker-label.upcoming-label { color: #ffd700; border-color: rgba(255,215,0,0.3); }
 
   .marker-label.project-label { color: #ff4757; border-color: rgba(255,71,87,0.4); text-shadow: 0 0 8px rgba(255,71,87,0.5); }
+  .marker-label.completed-label { color: #2ed573; border-color: rgba(46,213,115,0.4); text-shadow: 0 0 8px rgba(46,213,115,0.5); }
 
   .marker-date {
 
@@ -2585,6 +2591,7 @@
   .marker-date.upcoming-date { color: rgba(255,215,0,0.9); }
 
   .marker-date.project-date { color: rgba(255,71,87,0.9); }
+  .marker-date.completed-date { color: rgba(46,213,115,0.9); }
 
   .marker-person {
 
@@ -2661,6 +2668,8 @@
   @keyframes projectPulse1 { 0%{transform:translateX(-50%) scale(1);opacity:0.7} 100%{transform:translateX(-50%) scale(3);opacity:0} }
 
   @keyframes projectPulse2 { 0%{transform:translateX(-50%) scale(1);opacity:0.5} 100%{transform:translateX(-50%) scale(2.5);opacity:0} }
+  @keyframes completedPulse1 { 0%{transform:translateX(-50%) scale(1);opacity:0.7} 100%{transform:translateX(-50%) scale(3);opacity:0} }
+  @keyframes completedPulse2 { 0%{transform:translateX(-50%) scale(1);opacity:0.5} 100%{transform:translateX(-50%) scale(2.5);opacity:0} }
 
   @keyframes markerPulse { 0%{transform:translateX(-50%) scale(1);opacity:1} 100%{transform:translateX(-50%) scale(2.5);opacity:0} }
 
@@ -7585,6 +7594,18 @@ function addMarker(fp) {
 
       `;
 
+    } else if (fp.type === 'completed') {
+
+      markerContent.innerHTML = `
+
+        <div class="marker-dot completed-dot" style="width:10px;height:10px;margin:5px 0;"></div>
+
+        <div class="marker-ring completed-ring" style="width:20px;height:20px;top:0;border-width:1px;"></div>
+
+        <div class="marker-ring2 completed-ring2" style="width:20px;height:20px;top:0;border-width:1px;"></div>
+
+      `;
+
     } else {
 
       markerContent.innerHTML = `
@@ -7639,6 +7660,26 @@ function addMarker(fp) {
 
     `;
 
+  } else if (fp.type === 'completed') {
+
+    const personInline = fp.person ? `<span class="label-person">${fp.person}</span>` : '';
+
+    const dateHtml = fp.time ? `<div class="marker-date completed-date">${fp.time.split(' ')[0].replace(/\s*点亮\s*$/, '')}</div>` : '';
+
+    markerContent.innerHTML = `
+
+      <div class="marker-dot completed-dot"></div>
+
+      <div class="marker-ring completed-ring"></div>
+
+      <div class="marker-ring2 completed-ring2"></div>
+
+      <div class="marker-label completed-label"><span class="label-city">${displayName}</span>${personInline}</div>
+
+      ${dateHtml}
+
+    `;
+
   } else {
 
     markerContent.innerHTML = `
@@ -7659,7 +7700,7 @@ function addMarker(fp) {
 
   // 草稿标记和正常标记使用不同的尺寸和锚点
 
-  const showExtra = (fp.type === 'project' || fp.type === 'upcoming') && (fp.person || fp.time);
+  const showExtra = (fp.type === 'project' || fp.type === 'upcoming' || fp.type === 'completed') && (fp.person || fp.time);
 
   const icon = isDraft ? L.divIcon({
 
@@ -7695,11 +7736,11 @@ function addMarker(fp) {
 
 
 
-  const popupClasses = { visited: 'visited-popup', upcoming: 'upcoming-popup', project: 'project-popup' };
+  const popupClasses = { visited: 'visited-popup', upcoming: 'upcoming-popup', project: 'project-popup', completed: 'completed-popup' };
 
-  const badgeClasses = { visited: 'visited', upcoming: 'upcoming', project: 'project' };
+  const badgeClasses = { visited: 'visited', upcoming: 'upcoming', project: 'project', completed: 'completed' };
 
-  const badgeTexts = { visited: '✓ 已去过', upcoming: 'CGC项目', project: '近期项目' };
+  const badgeTexts = { visited: '✓ 已去过', upcoming: 'CGC项目', project: '近期项目', completed: '✅ 完成项目' };
 
 
 
@@ -7827,9 +7868,9 @@ function updateMarkerPopup(fpId) {
 
   
 
-  const badgeClasses = { visited: 'visited-badge', upcoming: 'upcoming-badge', project: 'project-badge' };
+  const badgeClasses = { visited: 'visited-badge', upcoming: 'upcoming-badge', project: 'project-badge', completed: 'completed-badge' };
 
-  const badgeTexts = { visited: '✓ 去过', upcoming: 'CGC项目', project: '近期项目' };
+  const badgeTexts = { visited: '✓ 去过', upcoming: 'CGC项目', project: '近期项目', completed: '✅ 完成项目' };
 
 
 
@@ -9155,7 +9196,8 @@ function createFootprintCard(fp, num) {
 
     upcoming: '<span class="fp-badge upcoming-badge">CGC项目</span>',
 
-    project: '<span class="fp-badge project-badge">近期项目</span>'
+    project: '<span class="fp-badge project-badge">近期项目</span>',
+    completed: '<span class="fp-badge completed-badge">✅ 完成项目</span>'
 
   };
 
