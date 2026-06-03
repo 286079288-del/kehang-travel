@@ -372,7 +372,17 @@
 
   }
 
-  .mode-btn:hover:not(.active-visited):not(.active-upcoming):not(.active-project) { color: var(--text-primary); }
+  .mode-btn.active-completed {
+
+    background: rgba(46,213,115,0.15); color: #2ed573;
+
+    box-shadow: inset 0 -2px 0 #2ed573;
+
+  }
+
+  .mode-btn:hover:not(.active-visited):not(.active-upcoming):not(.active-project):not(.active-completed) { color: var(--text-primary); }
+
+  .fp-badge.completed-badge { background: rgba(46,213,115,0.2); color: #2ed573; }
 
 
 
@@ -3238,9 +3248,9 @@
 
     <button class="toolbar-btn" title="导入数据" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:14px;padding:4px 10px;" onclick="document.getElementById('importFileInput').click()">📥</button>
 
-    <span id="syncIndicator" style="font-size:12px;color:#00ff88;margin:0 6px;cursor:pointer;white-space:nowrap;" onclick="cloudLoadFootprints()" title="点击从云端下载">☁️ 下载</span>
+    <span id="syncIndicator" style="font-size:12px;color:#00ff88;margin:0 6px;cursor:pointer;white-space:nowrap;" onclick="exportData()" title="导出数据到文件">📤 导出</span>
 
-    <button class="toolbar-btn" id="uploadBtn" title="上传数据到云端（需要密码）" style="background:linear-gradient(135deg,#00d4ff22,#7b2ff722);border-color:rgba(0,212,255,0.3);color:#00d4ff;font-size:13px;padding:5px 14px;" onclick="manualUpload()">⬆️ 上传</button>
+    <button class="toolbar-btn" id="uploadBtn" title="从文件导入数据" style="background:linear-gradient(135deg,#00d4ff22,#7b2ff722);border-color:rgba(0,212,255,0.3);color:#00d4ff;font-size:13px;padding:5px 14px;" onclick="document.getElementById('importFileInput').click()">📥 导入</button>
 
     <button class="toolbar-btn" id="fullscreenBtn" title="全屏" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:14px;padding:4px 10px;">⛶</button>
 
@@ -3263,6 +3273,8 @@
     <button class="mode-btn" id="modeUpcoming" onclick="switchMode('upcoming')">CGC项目</button>
 
     <button class="mode-btn" id="modeProject" onclick="switchMode('project')">近期项目</button>
+
+    <button class="mode-btn" id="modeCompleted" onclick="switchMode('completed')" style="color:var(--completed-color,#2ed573);">完成项目</button>
 
   </div>
 
@@ -3701,10 +3713,8 @@
         <div>📊 足迹数量：<span id="cloudFpCount">0</span></div>
       </div>
       <div class="form-actions" style="flex-direction:column;gap:8px;">
-        <button class="form-btn" style="width:100%;background:linear-gradient(135deg,#00ff88,#00d4aa);color:var(--text-primary);" onclick="cloudSaveFootprints(); showToast('⏳ 正在上传...','info');">⬆️ 立即上传到云端</button>
-        <button class="form-btn primary" style="width:100%;" onclick="cloudLoadFootprints()">⬇️ 从云端下载</button>
-        <button class="form-btn secondary" style="width:100%;" onclick="exportData()">💾 导出到文件</button>
-        <button class="form-btn secondary" style="width:100%;" onclick="document.getElementById('importFileInput').click()">📂 从文件导入</button>
+        <button class="form-btn" style="width:100%;background:linear-gradient(135deg,#2ed573,#00d4aa);color:var(--text-primary);" onclick="exportData()">📤 导出全部数据到文件</button>
+        <button class="form-btn primary" style="width:100%;" onclick="document.getElementById('importFileInput').click()">📥 从文件导入数据</button>
         <button class="form-btn secondary" style="width:100%;" onclick="closeCloudSyncModal()">关闭</button>
       </div>
     </div>
@@ -7237,6 +7247,12 @@ function renderSearchResults(results, mode) {
 
 function switchMode(mode) {
 
+  // 完成项目需要密码解锁
+  if (mode === 'completed' && !window._completedUnlocked) {
+    unlockCompleted();
+    return;
+  }
+
   currentMode = mode;
 
   const vBtn = document.getElementById('modeVisited');
@@ -7245,6 +7261,7 @@ function switchMode(mode) {
 
   const pBtn = document.getElementById('modeProject');
 
+  const cBtn = document.getElementById('modeCompleted');
 
 
   vBtn.className = mode === 'visited' ? 'mode-btn active-visited' : 'mode-btn';
@@ -7252,6 +7269,54 @@ function switchMode(mode) {
   uBtn.className = mode === 'upcoming' ? 'mode-btn active-upcoming' : 'mode-btn';
 
   pBtn.className = mode === 'project' ? 'mode-btn active-project' : 'mode-btn';
+
+  if (cBtn) cBtn.className = mode === 'completed' ? 'mode-btn active-completed' : 'mode-btn';
+
+}
+
+// 解锁完成项目（密码: 5215181）
+function unlockCompleted() {
+
+  const pw = prompt('🔒 请输入密码查看完成项目：');
+
+  if (pw === '5215181') {
+
+    window._completedUnlocked = true;
+
+    window.hiddenTypes.delete('completed');
+
+    localStorage.setItem('completed_unlocked', 'true');
+
+    localStorage.setItem('hiddenTypes', JSON.stringify([...window.hiddenTypes]));
+
+    currentMode = 'completed';
+
+    switchMode('completed');
+
+    renderAllMarkers();
+
+    renderFootprints();
+
+    updateStats();
+
+    showToast('✅ 完成项目已解锁', 'success');
+
+  } else if (pw !== null) {
+
+    showToast('❌ 密码错误', 'error');
+
+  }
+
+}
+
+// 恢复完成项目解锁状态
+if (localStorage.getItem('completed_unlocked') === 'true') {
+
+  window._completedUnlocked = true;
+
+  window.hiddenTypes.delete('completed');
+
+  localStorage.setItem('hiddenTypes', JSON.stringify([...window.hiddenTypes]));
 
 }
 
@@ -7412,7 +7477,7 @@ function clearAll(type) {
 
   if (items.length === 0) return;
 
-  const labels = { visited: '已去过', upcoming: 'CGC项目', project: '近期项目' };
+  const labels = { visited: '已去过', upcoming: 'CGC项目', project: '近期项目', completed: '完成项目' };
 
   if (!confirm(`确定要清空所有「${labels[type]}」的地点吗？`)) return;
 
@@ -7818,7 +7883,7 @@ function updateMarkerPopup(fpId) {
 
   const convertButtons = otherTypes.map(t => {
 
-    const icons = { visited: '✓', upcoming: '●', project: '●' };
+    const icons = { visited: '✓', upcoming: '●', project: '●', completed: '✅' };
 
     const labels = { visited: '去过', upcoming: 'CGC项目', project: '近期项目' };
 
@@ -9054,7 +9119,7 @@ function createFootprintCard(fp, num) {
 
   const convertButtons = otherTypes.map(t => {
 
-    const icons = { visited: '✓', upcoming: '●', project: '●' };
+    const icons = { visited: '✓', upcoming: '●', project: '●', completed: '✅' };
 
     const labels = { visited: '去过', upcoming: 'CGC项目', project: '近期项目' };
 
@@ -9174,7 +9239,7 @@ function updateStats() {
 
 const VISIBILITY_KEY = 'travel_type_visibility';
 
-window.hiddenTypes = new Set(JSON.parse(localStorage.getItem(VISIBILITY_KEY) || '[]'));
+window.hiddenTypes = new Set(JSON.parse(localStorage.getItem(VISIBILITY_KEY) || '["completed"]'));
 
 
 
@@ -9270,6 +9335,8 @@ function exportData() {
 
     itinerary: itinerary,
 
+    schedule: scheduleItems,
+
     exportTime: new Date().toISOString(),
 
     version: '2.0'
@@ -9329,6 +9396,14 @@ function importData(e) {
         itinerary = data.itinerary;
 
         localStorage.setItem(ITINERARY_KEY, JSON.stringify(itinerary));
+
+      }
+
+      if (data.schedule) {
+
+        scheduleItems = data.schedule;
+
+        localStorage.setItem(SCHEDULE_KEY, JSON.stringify(scheduleItems));
 
       }
 
@@ -9880,6 +9955,14 @@ async function silentDownloadFromGist() {
         itinerary = data.itinerary;
 
         localStorage.setItem(ITINERARY_KEY, JSON.stringify(itinerary));
+
+      }
+
+      if (data.schedule) {
+
+        scheduleItems = data.schedule;
+
+        localStorage.setItem(SCHEDULE_KEY, JSON.stringify(scheduleItems));
 
       }
 
