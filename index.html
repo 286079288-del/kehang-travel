@@ -3248,6 +3248,14 @@
 
     <button class="toolbar-btn" id="uploadBtn" title="上传数据到云端（需要密码）" style="background:linear-gradient(135deg,#00d4ff22,#7b2ff722);border-color:rgba(0,212,255,0.3);color:#00d4ff;font-size:13px;padding:5px 14px;" onclick="manualUpload()">⬆️ 上传</button>
 
+    <select id="addModeSelect" onchange="currentMode=this.value" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:12px;padding:4px 8px;border-radius:6px;cursor:pointer;" title="双击地图添加标记的类型">
+      <option value="project" selected>🔴 近期项目</option>
+      <option value="upcoming">🟡 CGC项目</option>
+      <option value="completed">✅ 完成项目</option>
+      <option value="visited">📍 已去过</option>
+      <option value="wishlist">🌟 想去</option>
+    </select>
+
     <button class="toolbar-btn" id="fullscreenBtn" title="全屏" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:14px;padding:4px 10px;">⛶</button>
 
     <button class="toolbar-btn" id="themeToggleBtn" title="切换亮/暗主题" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:14px;padding:4px 10px;">🌙</button>
@@ -5229,7 +5237,7 @@ const COUNTY_COORDS = {
 
 let map;
 
-let currentMode = 'visited';
+let currentMode = 'project'; // 默认双击地图添加近期项目
 
 let footprints = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
 
@@ -9077,21 +9085,53 @@ function renderLockedSection(list, type, titleText, count) {
 
     e.stopPropagation();
 
-    var p = prompt('请输入密码查看已去过：');
+    // 检查是否已有输入框
 
-    if (p === '5215181') {
+    var existing = document.getElementById('visitedPwdWrap');
 
-      window.visitedUnlocked = true;
+    if (existing) { existing.remove(); return; }
 
-      showToast('🔓 已去过已解锁', 'success');
+    // 创建内联密码输入框
 
-      renderFootprints();
+    var wrap = document.createElement('div');
 
-    } else if (p) {
+    wrap.id = 'visitedPwdWrap';
 
-      alert('密码错误');
+    wrap.style.cssText = 'display:flex;gap:6px;padding:8px 12px;background:rgba(0,0,0,0.3);border-left:2px solid rgba(0,212,255,0.4);margin:2px 0 4px 0;';
 
-    }
+    wrap.innerHTML = '<input type="password" id="visitedPwdInput" placeholder="输入密码 5215181" style="flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;padding:6px 10px;border-radius:4px;font-size:13px;"><button id="visitedPwdBtn" style="background:rgba(0,212,255,0.2);border:1px solid rgba(0,212,255,0.3);color:#00d4ff;padding:6px 14px;border-radius:4px;cursor:pointer;font-size:13px;white-space:nowrap;">解锁</button>';
+
+    title.after(wrap);
+
+    var input = document.getElementById('visitedPwdInput');
+
+    input.focus();
+
+    var doUnlock = function() {
+
+      var p = input.value;
+
+      if (p === '5215181') {
+
+        window.visitedUnlocked = true;
+
+        wrap.remove();
+
+        showToast('🔓 已去过已解锁', 'success');
+
+        renderFootprints();
+
+      } else if (p) {
+
+        alert('密码错误');
+
+      }
+
+    };
+
+    document.getElementById('visitedPwdBtn').onclick = doUnlock;
+
+    input.addEventListener('keydown', function(ev) { if (ev.key === 'Enter') doUnlock(); });
 
   });
 
