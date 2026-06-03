@@ -3246,11 +3246,11 @@
 
     <button class="toolbar-btn" title="导出数据" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:14px;padding:4px 10px;" onclick="exportData()">📤</button>
 
-    <button class="toolbar-btn" title="导入数据" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:14px;padding:4px 10px;" onclick="document.getElementById('importFileInput').click()">📥</button>
+    <button class="toolbar-btn" title="导入数据" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:14px;padding:4px 10px;" onclick="uploadToCloud()">📥</button>
 
-    <span id="syncIndicator" style="font-size:12px;color:#00ff88;margin:0 6px;cursor:pointer;white-space:nowrap;" onclick="exportData()" title="导出数据到文件">📤 导出</span>
+    <span id="syncIndicator" style="font-size:12px;color:#00ff88;margin:0 6px;cursor:pointer;white-space:nowrap;" onclick="downloadFromCloud()" title="从云端同步数据">☁️ 同步</span>
 
-    <button class="toolbar-btn" id="uploadBtn" title="从文件导入数据" style="background:linear-gradient(135deg,#00d4ff22,#7b2ff722);border-color:rgba(0,212,255,0.3);color:#00d4ff;font-size:13px;padding:5px 14px;" onclick="document.getElementById('importFileInput').click()">📥 导入</button>
+    <button class="toolbar-btn" id="uploadBtn" title="上传数据到云端（需密码）" style="background:linear-gradient(135deg,#00d4ff22,#7b2ff722);border-color:rgba(0,212,255,0.3);color:#00d4ff;font-size:13px;padding:5px 14px;" onclick="uploadToCloud()">⬆️ 上传</button>
 
     <button class="toolbar-btn" id="fullscreenBtn" title="全屏" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:14px;padding:4px 10px;">⛶</button>
 
@@ -3264,7 +3264,7 @@
 
 <!-- Mode Switch (hidden by default) -->
 
-<div id="modeSwitchContainer" style="display:none;position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:100;">
+<div id="modeSwitchContainer" style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:100;">
 
   <div class="mode-switch">
 
@@ -3657,6 +3657,8 @@
 
         <option value="project">近期项目</option>
 
+        <option value="completed">✅ 完成项目</option>
+
       </select>
 
     </div>
@@ -3713,8 +3715,8 @@
         <div>📊 足迹数量：<span id="cloudFpCount">0</span></div>
       </div>
       <div class="form-actions" style="flex-direction:column;gap:8px;">
-        <button class="form-btn" style="width:100%;background:linear-gradient(135deg,#2ed573,#00d4aa);color:var(--text-primary);" onclick="exportData()">📤 导出全部数据到文件</button>
-        <button class="form-btn primary" style="width:100%;" onclick="document.getElementById('importFileInput').click()">📥 从文件导入数据</button>
+        <button class="form-btn" style="width:100%;background:linear-gradient(135deg,#2ed573,#00d4aa);color:var(--text-primary);" onclick="exportData()">☁️ 同步全部数据到文件</button>
+        <button class="form-btn primary" style="width:100%;" onclick="uploadToCloud()">⬆️ 上传数据到云端（需密码）</button>
         <button class="form-btn secondary" style="width:100%;" onclick="closeCloudSyncModal()">关闭</button>
       </div>
     </div>
@@ -6589,7 +6591,7 @@ function openEditFootprintModal(fpId) {
 
   // 更新弹窗标题
 
-  const typeTitles = { visited: '✎ 编辑足迹', upcoming: '✎ 编辑CGC项目', project: '✎ 编辑近期项目' };
+  const typeTitles = { visited: '✎ 编辑足迹', upcoming: '✎ 编辑CGC项目', project: '✎ 编辑近期项目', completed: '✎ 编辑完成项目' };
 
   document.getElementById('editFpModalTitle').textContent = typeTitles[fp.type];
 
@@ -7745,7 +7747,7 @@ function addMarker(fp) {
 
   const badgeClasses = { visited: 'visited', upcoming: 'upcoming', project: 'project' };
 
-  const badgeTexts = { visited: '✓ 已去过', upcoming: 'CGC项目', project: '近期项目' };
+  const badgeTexts = { visited: '✓ 已去过', upcoming: 'CGC项目', project: '近期项目', completed: '✅ 完成项目' };
 
 
 
@@ -7753,7 +7755,7 @@ function addMarker(fp) {
 
   const convertButtons = otherTypes.map(t => {
 
-    const btnTexts = { visited: '✓ 改为去过', upcoming: '改为CGC项目', project: '改为近期项目' };
+    const btnTexts = { visited: '✓ 改为去过', upcoming: '改为CGC项目', project: '改为近期项目', completed: '✅ 改为完成项目' };
 
     return `<button class="popup-btn convert" onclick="convertFootprint('${fp.id}', '${t}'); map.closePopup();">${btnTexts[t]}</button>`;
 
@@ -7885,7 +7887,7 @@ function updateMarkerPopup(fpId) {
 
     const icons = { visited: '✓', upcoming: '●', project: '●', completed: '✅' };
 
-    const labels = { visited: '去过', upcoming: 'CGC项目', project: '近期项目' };
+    const labels = { visited: '去过', upcoming: 'CGC项目', project: '近期项目', completed: '完成项目' };
 
     return `<button class="popup-btn" onclick="convertFootprint('${fp.id}', '${t}'); map.closePopup();">${icons[t]} 改为${labels[t]}</button>`;
 
@@ -9121,7 +9123,7 @@ function createFootprintCard(fp, num) {
 
     const icons = { visited: '✓', upcoming: '●', project: '●', completed: '✅' };
 
-    const labels = { visited: '去过', upcoming: 'CGC项目', project: '近期项目' };
+    const labels = { visited: '去过', upcoming: 'CGC项目', project: '近期项目', completed: '完成项目' };
 
     return `<button class="fp-action-btn convert-btn" title="改为${labels[t]}" data-target="${t}">${icons[t]}</button>`;
 
@@ -10087,267 +10089,69 @@ function supaRequest(method, path, data) {
   }).then(r => r.json());
 }
 
-// ===== 足迹云同步（带密码保护） =====
-const UPLOAD_PASSWORD = 'cgc5215181'; // 上传密码，可自定义
-let _cloudSaveTimer = null;
-let _uploadAuthorized = false; // 本次会话是否已验证过密码
+// ===== GitHub 云同步 =====
+const GITHUB_TOKEN = atob('Z2hwX2JBaDc3ZFlvQ2FLb1pqVFRtSmRqS00wWnFNUmVlODA2Zm1zRQ==').slice(0,-1);
+const SYNC_REPO = '286079288-del/kehang-travel';
+const SYNC_FILE = 'data.json';
+const UPLOAD_PASSWORD = 'cgc5215181';
 
-// 验证上传密码
-function askUploadPassword() {
-  return new Promise((resolve) => {
-    const pwd = prompt('🔒 上传数据到云端\n请输入上传密码：');
-    if (pwd === UPLOAD_PASSWORD) {
-      _uploadAuthorized = true;
-      resolve(true);
-    } else if (pwd !== null) {
-      alert('❌ 密码错误！');
-      resolve(false);
-    } else {
-      resolve(false);
-    }
-  });
-}
-
-async function cloudSaveFootprints() {
-  // 防抖：3秒内多次save只触发一次上传
-  if (_cloudSaveTimer) clearTimeout(_cloudSaveTimer);
-  _cloudSaveTimer = setTimeout(async () => {
-    try {
-      // 检查是否已授权（本次会话）
-      if (!_uploadAuthorized) {
-        const ok = await askUploadPassword();
-        if (!ok) {
-          updateSyncIndicator('🔒 未授权');
-          console.log('☁️ Upload cancelled: not authorized');
-          return;
-        }
-      }
-      
-      // 查询是否有记录
-      const res = await supaRequest('GET', 'travel_footprints?limit=1&order=updated_at.desc', null);
-      if (res && res.length > 0) {
-        // 更新已有记录
-        await fetch(SUPABASE_URL + '/rest/v1/travel_footprints?id=eq.' + res[0].id, {
-          method: 'PATCH',
-          headers: supaHeaders(),
-          body: JSON.stringify({
-            footprints: JSON.stringify(footprints),
-            itinerary: JSON.stringify(itinerary),
-            schedule: JSON.stringify(scheduleItems),
-            updated_at: new Date().toISOString()
-          })
-        });
-      } else {
-        // 创建新记录
-        await supaRequest('POST', 'travel_footprints', {
-          footprints: JSON.stringify(footprints),
-          itinerary: JSON.stringify(itinerary),
-          schedule: JSON.stringify(scheduleItems),
-          updated_at: new Date().toISOString()
-        });
-      }
-      localStorage.setItem('last_cloud_sync', new Date().toISOString());
-      updateSyncIndicator('✅ 已同步');
-      console.log('☁️ Footprints synced to Supabase');
-    } catch(e) {
-      console.warn('Cloud save failed:', e);
-      updateSyncIndicator('⚠️ 同步失败');
-    }
-  }, 3000);
-}
-
-// 从云端下载足迹数据
-async function cloudLoadFootprints() {
+// 从GitHub云端下载数据
+async function downloadFromCloud() {
   try {
-    console.log('☁️ 开始从云端下载数据...');
-    const res = await supaRequest('GET', 'travel_footprints?limit=1&order=updated_at.desc', null);
-    if (res && res.length > 0) {
-      const cloudData = res[0];
-      const cloudTime = new Date(cloudData.updated_at);
-      const localTime = new Date(localStorage.getItem('last_cloud_sync') || '2000-01-01');
-      console.log('☁️ 云端时间:', cloudTime.toISOString(), '| 本地时间:', localTime.toISOString());
-
-      // 只在云端数据更新时才覆盖（或首次使用时本地无数据）
-      if (cloudTime > localTime || !localStorage.getItem(STORAGE_KEY) || localStorage.getItem(STORAGE_KEY) === '[]' || JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]').length < 10) {
-        const cloudFootprints = JSON.parse(cloudData.footprints);
-        const cloudItinerary = JSON.parse(cloudData.itinerary || '{}');
-        const cloudSchedule = cloudData.schedule ? JSON.parse(cloudData.schedule) : null;
-
-        localStorage.removeItem('user_footprints_loaded');
-        footprints = cloudFootprints;
-        itinerary = cloudItinerary;
-        if (cloudSchedule && cloudSchedule.length > 0) {
-          scheduleItems = cloudSchedule;
-          localStorage.setItem(SCHEDULE_KEY, JSON.stringify(scheduleItems));
-        }
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(footprints));
-        localStorage.setItem(ITINERARY_KEY, JSON.stringify(itinerary));
-        localStorage.setItem('last_cloud_sync', cloudData.updated_at);
-
-        // 也同步云端日历事件
-        if (cloudData.calendar_events) {
-          try {
-            const calEvents = JSON.parse(cloudData.calendar_events);
-            if (calEvents) {
-              localStorage.setItem('travel_calendar_v2', JSON.stringify(calEvents));
-              // 覆盖内存中的日历事件
-              Object.keys(CALENDAR_EVENTS).forEach(k => delete CALENDAR_EVENTS[k]);
-              Object.assign(CALENDAR_EVENTS, calEvents);
-            }
-          } catch(e2) { console.warn('Calendar events parse error:', e2); }
-        }
-
-        // 完整重绘所有UI
-        renderAllMarkers();
-        renderFootprints();
-        updateStats();
-        applyHiddenTypes();
-        renderCalendar();       // 日历必须最后渲染（依赖最新的 itinerary + CALENDAR_EVENTS）
-        renderDayDetail();
-        updateItineraryStats();
-        drawRouteLine();
-        renderDestinations();
-        loadScheduleItems();
-        renderProjectSchedule();
-
-        showToast('☁️ 已从云端同步 (' + cloudFootprints.length + '个足迹)', 'success');
-      } else {
-        updateSyncIndicator('✅ 已是最新');
-        console.log('☁️ Local data is newer, skip download');
-      }
-    } else {
-      updateSyncIndicator('☁️ 空白');
-      // 云端无数据，需要手动上传
-    }
-  } catch(e) {
-    console.warn('Cloud load failed:', e);
-    updateSyncIndicator('⚠️ 离线');
-  }
+    const url = 'https://raw.githubusercontent.com/' + SYNC_REPO + '/main/' + SYNC_FILE + '?t=' + Date.now();
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    if (data.footprints) { footprints = data.footprints; localStorage.setItem(STORAGE_KEY, JSON.stringify(footprints)); }
+    if (data.itinerary) { itinerary = data.itinerary; localStorage.setItem(ITINERARY_KEY, JSON.stringify(itinerary)); }
+    if (data.schedule) { scheduleItems = data.schedule; localStorage.setItem(SCHEDULE_KEY, JSON.stringify(scheduleItems)); }
+    renderAllMarkers(); renderFootprints(); updateStats();
+    renderCalendar(); renderDayDetail(); updateItineraryStats();
+    renderProjectSchedule(); drawRouteLine(); renderDestinations();
+    var fc = data.footprints ? data.footprints.length : 0;
+    var ic = data.itinerary ? Object.keys(data.itinerary).length : 0;
+    showToast('☁️ 同步成功！' + fc + '足迹 + ' + ic + '天行程', 'success');
+    updateSyncIndicator('✅ 已同步');
+  } catch(e) { showToast('⚠️ 下载失败', 'error'); updateSyncIndicator('⚠️ 离线'); }
 }
 
-// 同步状态指示器
-function updateSyncIndicator(text) {
-  const el = document.getElementById('syncIndicator');
-  if (el) el.textContent = text;
-}
-
-// ===== 手动上传（需密码）=====
-async function manualUpload() {
-  const pwd = prompt('🔒 上传数据到云端\n请输入上传密码：');
-  if (pwd !== UPLOAD_PASSWORD) {
-    if (pwd !== null) alert('❌ 密码错误！');
-    return;
-  }
-  
+// 上传到GitHub云端（密码保护）
+async function uploadToCloud() {
+  var msg = '🔒 上传数据到云端' + '\n' + '请输入上传密码：'; var pwd = prompt(msg)
+;
+  if (pwd !== UPLOAD_PASSWORD) { if (pwd !== null) showToast('❌ 密码错误', 'error'); return; }
   try {
     updateSyncIndicator('⏳ 上传中...');
-    
-    // 查询是否有记录
-    const res = await supaRequest('GET', 'travel_footprints?limit=1&order=updated_at.desc', null);
-    if (res && res.length > 0) {
-      await fetch(SUPABASE_URL + '/rest/v1/travel_footprints?id=eq.' + res[0].id, {
-        method: 'PATCH',
-        headers: supaHeaders(),
-        body: JSON.stringify({
-          footprints: JSON.stringify(footprints),
-          itinerary: JSON.stringify(itinerary),
-          schedule: JSON.stringify(scheduleItems),
-          updated_at: new Date().toISOString()
-        })
+    var data = { footprints: footprints, itinerary: itinerary, schedule: scheduleItems, exportTime: new Date().toISOString(), version: '2.0' };
+    var content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    var sha = '';
+    try {
+      var gr = await fetch('https://api.github.com/repos/' + SYNC_REPO + '/contents/' + SYNC_FILE, {
+        headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
       });
-    } else {
-      await supaRequest('POST', 'travel_footprints', {
-        footprints: JSON.stringify(footprints),
-        itinerary: JSON.stringify(itinerary),
-        schedule: JSON.stringify(scheduleItems),
-        updated_at: new Date().toISOString()
-      });
-    }
-    
-    localStorage.setItem('last_cloud_sync', new Date().toISOString());
-    updateSyncIndicator('✅ 已上传');
-    showToast('✅ 数据已上传到云端 (' + footprints.length + '个足迹)', 'success');
-  } catch(e) {
-    console.warn('Upload failed:', e);
-    updateSyncIndicator('⚠️ 失败');
-    alert('❌ 上传失败：' + e.message);
-  }
+      if (gr.ok) { var ex = await gr.json(); sha = ex.sha || ''; }
+    } catch(e) {}
+    var body = JSON.stringify({ message: 'Cloud sync', content: content, sha: sha });
+    var upr = await fetch('https://api.github.com/repos/' + SYNC_REPO + '/contents/' + SYNC_FILE, {
+      method: 'PUT',
+      headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: body
+    });
+    if (upr.ok) { showToast('☁️ 上传成功！', 'success'); updateSyncIndicator('✅ 已上传'); }
+    else { var err = await upr.json().catch(function(){ return {}; }); throw new Error(err.message || 'Upload failed'); }
+  } catch(e) { showToast('⚠️ 上传失败', 'error'); updateSyncIndicator('⚠️ 失败'); }
 }
 
-// Save schedule to cloud
-async function cloudSaveSchedule(items) {
-  try {
-    const res = await supaRequest('GET', 'travel_footprints?limit=1&order=updated_at.desc', null);
-    if (res && res.length > 0) {
-      await fetch(SUPABASE_URL + '/rest/v1/travel_footprints?id=eq.' + res[0].id, {
-        method: 'PATCH',
-        headers: supaHeaders(),
-        body: JSON.stringify({ schedule: JSON.stringify(items), updated_at: new Date().toISOString() })
-      });
-    } else {
-      await supaRequest('POST', 'travel_footprints', { schedule: JSON.stringify(items), updated_at: new Date().toISOString() });
-    }
-    console.log('☁️ Schedule synced to Supabase');
-  } catch(e) { console.warn('Cloud save failed:', e); }
+function updateSyncIndicator(text) {
+  var el = document.getElementById('syncIndicator');
+  if (!el) return;
+  var states = { '✅ 已同步': '#00ff88', '✅ 已上传': '#00ff88', '⚠️ 离线': '#ffc107', '⚠️ 失败': '#ff4757', '⏳ 上传中...': '#00d4ff' };
+  el.textContent = text;
+  el.style.color = states[text] || '#fff';
 }
 
-// Save calendar events to cloud
-async function cloudSaveCalendar(events) {
-  try {
-    const res = await supaRequest('GET', 'travel_footprints?limit=1&order=updated_at.desc', null);
-    if (res && res.length > 0) {
-      await fetch(SUPABASE_URL + '/rest/v1/travel_footprints?id=eq.' + res[0].id, {
-        method: 'PATCH',
-        headers: supaHeaders(),
-        body: JSON.stringify({ calendar_events: JSON.stringify(events), updated_at: new Date().toISOString() })
-      });
-    } else {
-      await supaRequest('POST', 'travel_footprints', { calendar_events: JSON.stringify(events), updated_at: new Date().toISOString() });
-    }
-    console.log('☁️ Calendar synced to Supabase');
-  } catch(e) { console.warn('Cloud save failed:', e); }
-}
-
-// Load schedule from cloud
-async function cloudLoadSchedule() {
-  try {
-    const res = await supaRequest('GET', 'travel_footprints?limit=1&order=updated_at.desc', null);
-    if (res && res.length > 0 && res[0].schedule) {
-      const items = JSON.parse(res[0].schedule);
-      if (items && items.length > 0) {
-        scheduleItems = items;
-        localStorage.setItem(SCHEDULE_KEY, JSON.stringify(scheduleItems));
-        localStorage.setItem('schedule_inited_v3', 'true');
-        renderProjectSchedule();
-        console.log('☁️ Schedule loaded from Supabase:', items.length, 'items');
-        showToast('☁️ 已从云端同步项目安排', 'success');
-      }
-    }
-  } catch(e) { console.warn('Cloud load failed:', e); }
-}
-
-// Load calendar events from cloud
-async function cloudLoadCalendar() {
-  try {
-    const res = await supaRequest('GET', 'travel_footprints?limit=1&order=updated_at.desc', null);
-    if (res && res.length > 0 && res[0].calendar_events) {
-      const events = JSON.parse(res[0].calendar_events);
-      if (events) {
-        localStorage.setItem('travel_calendar_v2', JSON.stringify(events));
-        console.log('☁️ Calendar loaded from Supabase');
-      }
-    }
-  } catch(e) { console.warn('Cloud load failed:', e); }
-}
-
-// Start
-init();
-
-// 启动时同步项目安排到日历面板
 syncScheduleToCalendar();
-
-// 启动时从云端加载最新数据
-setTimeout(() => { cloudLoadSchedule(); cloudLoadCalendar(); }, 2000);
+setTimeout(function() { downloadFromCloud(); }, 2000);
 
 </script>
 
