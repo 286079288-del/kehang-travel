@@ -2042,6 +2042,9 @@
   .list-section-title.upcoming-title { color: rgba(255,215,0,0.5); }
 
   .list-section-title.project-title { color: rgba(255,71,87,0.6); }
+  .list-section-title.completed-title { color: rgba(46,213,115,0.6); }
+  .list-section-title.locked { opacity: 0.5; }
+  .list-section-title.locked:hover { opacity: 0.8; border-color: rgba(255,255,255,0.1); }
 
   .list-section-title .section-count {
 
@@ -8902,9 +8905,11 @@ function renderFootprints() {
 
   const wishlist = footprints.filter(f => f.type === 'wishlist' && !isDraft(f));
 
+  const completed = footprints.filter(f => f.type === 'completed' && !isDraft(f));
 
 
-  if (visited.length === 0 && upcoming.length === 0 && projects.length === 0 && wishlist.length === 0) {
+
+  if (visited.length === 0 && upcoming.length === 0 && projects.length === 0 && wishlist.length === 0 && completed.length === 0) {
 
     list.innerHTML = '<div style="padding:30px;text-align:center;color:rgba(255,255,255,0.2);font-size:13px;">还没有足迹<br>搜索地点或点击地图开始记录 ✨</div>';
 
@@ -8916,7 +8921,7 @@ function renderFootprints() {
 
   if (!window.sectionCollapsed) {
 
-    window.sectionCollapsed = { project: true, upcoming: true, visited: true, wishlist: true };
+    window.sectionCollapsed = { project: true, upcoming: true, visited: true, wishlist: true, completed: true };
 
   }
 
@@ -8946,9 +8951,27 @@ function renderFootprints() {
 
 
 
-  if (visited.length > 0) {
+  if (completed.length > 0) {
+
+    renderSection(list, 'completed', '✅ 完成项目', completed, 'completed-title');
+
+  }
+
+
+
+  // 已去过：默认锁定，需密码 5215181 解锁
+
+  if (visited.length > 0 && window.visitedUnlocked) {
 
     renderSection(list, 'visited', '📍 已去过', visited, 'visited-title');
+
+  }
+
+  // 始终显示已去过入口（锁定状态也显示，便于解锁）
+
+  if (visited.length > 0 && !window.visitedUnlocked) {
+
+    renderLockedSection(list, 'visited', '📍 已去过', visited.length);
 
   }
 
@@ -9037,6 +9060,44 @@ function renderSection(list, type, titleText, items, titleClass) {
     window.sectionCollapsed[type] = isCollapsed;
 
   });
+
+}
+
+// 锁定状态的足迹分组（点击需输入密码解锁）
+
+function renderLockedSection(list, type, titleText, count) {
+
+  const title = document.createElement('div');
+
+  title.className = 'list-section-title visited-title locked';
+
+  title.innerHTML = `${titleText} <span style="color:var(--text-muted);font-size:11px;">🔒 已锁定</span> <span class="section-count" style="background:rgba(255,255,255,0.05);">${count}</span><span class="collapse-icon" style="opacity:0.3;">▼</span>`;
+
+  title.style.cursor = 'pointer';
+
+  title.addEventListener('click', function(e) {
+
+    e.stopPropagation();
+
+    var p = prompt('请输入密码查看已去过：');
+
+    if (p === '5215181') {
+
+      window.visitedUnlocked = true;
+
+      showToast('🔓 已去过已解锁', 'success');
+
+      renderFootprints();
+
+    } else if (p) {
+
+      alert('密码错误');
+
+    }
+
+  });
+
+  list.appendChild(title);
 
 }
 
@@ -9187,6 +9248,7 @@ function updateStats() {
 const VISIBILITY_KEY = 'travel_type_visibility';
 
 window.hiddenTypes = new Set(JSON.parse(localStorage.getItem(VISIBILITY_KEY) || '[]'));
+window.visitedUnlocked = false; // 已去过默认锁定，需密码 5215181
 
 
 
