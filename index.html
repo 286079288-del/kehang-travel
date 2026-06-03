@@ -3248,7 +3248,7 @@
 
     <button class="toolbar-btn" id="uploadBtn" title="上传数据到云端（需要密码）" style="background:linear-gradient(135deg,#00d4ff22,#7b2ff722);border-color:rgba(0,212,255,0.3);color:#00d4ff;font-size:13px;padding:5px 14px;" onclick="manualUpload()">⬆️ 上传</button>
 
-    <select id="addModeSelect" onchange="currentMode=this.value" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:12px;padding:4px 8px;border-radius:6px;cursor:pointer;" title="双击地图添加标记的类型">
+    <select id="addModeSelect" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:12px;padding:4px 8px;border-radius:6px;cursor:pointer;" title="双击地图添加标记的类型">
       <option value="project" selected>🔴 近期项目</option>
       <option value="upcoming">🟡 CGC项目</option>
       <option value="completed">✅ 完成项目</option>
@@ -10251,6 +10251,11 @@ function toggleMobilePanel(panel) {
 
 // ===== 页面初始化入口 =====
 (function startApp() {
+  // 绑定模式选择下拉
+  var modeSel = document.getElementById('addModeSelect');
+  if (modeSel) {
+    modeSel.addEventListener('change', function() { currentMode = this.value; });
+  }
   // 等待 Leaflet 加载就绪后执行 init
   function tryInit() {
     if (typeof L !== 'undefined') {
