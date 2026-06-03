@@ -7743,6 +7743,17 @@
       "time": "2026/6/12-13",
       "unlocked": null,
       "person": ""
+    },
+    {
+      "id": "17804986501405v0p4nm30le",
+      "name": "沧州",
+      "address": "沧州",
+      "type": "project",
+      "lng": 116.8388,
+      "lat": 38.3045,
+      "time": "2026/6/14-14",
+      "unlocked": null,
+      "person": ""
     }
   ],
   "itinerary": {
@@ -8033,92 +8044,6 @@
         "source": "schedule"
       }
     ],
-    "2026-05-22": [
-      {
-        "title": "伊利周播",
-        "color": "",
-        "person": "李彦赛",
-        "locationId": "",
-        "locationName": "",
-        "source": "schedule"
-      },
-      {
-        "title": "山东 烟台",
-        "color": "",
-        "person": "张恩林",
-        "locationId": "",
-        "locationName": "",
-        "source": "schedule"
-      },
-      {
-        "title": "湖南 郴州",
-        "color": "",
-        "person": "程广超",
-        "locationId": "",
-        "locationName": "",
-        "source": "schedule"
-      },
-      {
-        "title": "河北秦皇岛",
-        "color": "",
-        "person": "骈一鑫",
-        "locationId": "",
-        "locationName": "",
-        "source": "schedule"
-      }
-    ],
-    "2026-05-15": [
-      {
-        "title": "伊利周播",
-        "color": "",
-        "person": "李彦赛",
-        "locationId": "",
-        "locationName": "",
-        "source": "schedule"
-      },
-      {
-        "title": "明星场",
-        "color": "",
-        "person": "程广超",
-        "locationId": "",
-        "locationName": "",
-        "source": "schedule"
-      },
-      {
-        "title": "昆明",
-        "color": "",
-        "person": "陈智勇",
-        "locationId": "",
-        "locationName": "",
-        "source": "schedule"
-      }
-    ],
-    "2026-05-29": [
-      {
-        "title": "伊利周播",
-        "color": "",
-        "person": "李彦赛",
-        "locationId": "",
-        "locationName": "",
-        "source": "schedule"
-      },
-      {
-        "title": "昆明",
-        "color": "",
-        "person": "程广超",
-        "locationId": "",
-        "locationName": "",
-        "source": "schedule"
-      },
-      {
-        "title": "广东 清远",
-        "color": "",
-        "person": "陈智勇",
-        "locationId": "",
-        "locationName": "",
-        "source": "schedule"
-      }
-    ],
     "2026-05-11": [
       {
         "title": "上海项目",
@@ -8157,6 +8082,32 @@
         "source": "schedule"
       }
     ],
+    "2026-05-15": [
+      {
+        "title": "伊利周播",
+        "color": "",
+        "person": "李彦赛",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      },
+      {
+        "title": "明星场",
+        "color": "",
+        "person": "程广超",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      },
+      {
+        "title": "昆明",
+        "color": "",
+        "person": "陈智勇",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
     "2026-05-16": [
       {
         "title": "明星场",
@@ -8175,21 +8126,11 @@
         "source": "schedule"
       }
     ],
-    "2026-05-26": [
+    "2026-05-17": [
       {
-        "title": "江苏 南通",
+        "title": "晋城",
         "color": "",
-        "person": "陈智勇",
-        "locationId": "",
-        "locationName": "",
-        "source": "schedule"
-      }
-    ],
-    "2026-05-27": [
-      {
-        "title": "江苏 南通",
-        "color": "",
-        "person": "陈智勇",
+        "person": "王志斌",
         "locationId": "",
         "locationName": "",
         "source": "schedule"
@@ -8213,21 +8154,35 @@
         "source": "schedule"
       }
     ],
-    "2026-05-17": [
+    "2026-05-22": [
       {
-        "title": "晋城",
+        "title": "伊利周播",
         "color": "",
-        "person": "王志斌",
+        "person": "李彦赛",
         "locationId": "",
         "locationName": "",
         "source": "schedule"
-      }
-    ],
-    "2026-05-30": [
+      },
       {
-        "title": "昆明",
+        "title": "山东 烟台",
+        "color": "",
+        "person": "张恩林",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      },
+      {
+        "title": "湖南 郴州",
         "color": "",
         "person": "程广超",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      },
+      {
+        "title": "河北秦皇岛",
+        "color": "",
+        "person": "骈一鑫",
         "locationId": "",
         "locationName": "",
         "source": "schedule"
@@ -8263,6 +8218,26 @@
         "source": "schedule"
       }
     ],
+    "2026-05-26": [
+      {
+        "title": "江苏 南通",
+        "color": "",
+        "person": "陈智勇",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-05-27": [
+      {
+        "title": "江苏 南通",
+        "color": "",
+        "person": "陈智勇",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
     "2026-05-28": [
       {
         "title": "广东 清远",
@@ -8276,6 +8251,120 @@
         "title": "浙江 杭州",
         "color": "",
         "person": "程广超",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-05-29": [
+      {
+        "title": "伊利周播",
+        "color": "",
+        "person": "李彦赛",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      },
+      {
+        "title": "昆明",
+        "color": "",
+        "person": "程广超",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      },
+      {
+        "title": "广东 清远",
+        "color": "",
+        "person": "陈智勇",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-05-30": [
+      {
+        "title": "昆明",
+        "color": "",
+        "person": "程广超",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-06-12": [
+      {
+        "title": "九江",
+        "color": "",
+        "person": "",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-06-13": [
+      {
+        "title": "九江",
+        "color": "",
+        "person": "",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      },
+      {
+        "title": "沧州",
+        "color": "",
+        "person": "",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-06-14": [
+      {
+        "title": "沧州",
+        "color": "",
+        "person": "",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-06-19": [
+      {
+        "title": "驻马店",
+        "color": "",
+        "person": "",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-06-20": [
+      {
+        "title": "驻马店",
+        "color": "",
+        "person": "",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-06-25": [
+      {
+        "title": "义乌",
+        "color": "",
+        "person": "",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-06-26": [
+      {
+        "title": "义乌",
+        "color": "",
+        "person": "",
         "locationId": "",
         "locationName": "",
         "source": "schedule"
@@ -8703,7 +8792,31 @@
       "date": "2026-06-12",
       "endDate": "2026-06-13",
       "id": 1780498063276
+    },
+    {
+      "content": "沧州",
+      "person": "",
+      "connector": "雅婕",
+      "date": "2026-06-13",
+      "endDate": "2026-06-14",
+      "id": 1780498618212
+    },
+    {
+      "content": "驻马店",
+      "person": "",
+      "connector": "",
+      "date": "2026-06-19",
+      "endDate": "2026-06-20",
+      "id": 1780498714148
+    },
+    {
+      "content": "义乌",
+      "person": "",
+      "connector": "",
+      "date": "2026-06-25",
+      "endDate": "2026-06-26",
+      "id": 1780498834132
     }
   ],
-  "exportTime": "2026-06-03T14:49:14.519Z"
+  "exportTime": "2026-06-03T15:00:46.267Z"
 }
