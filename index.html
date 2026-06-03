@@ -8469,7 +8469,8 @@ function saveScheduleItems() {
   // 不再自动上传，需要用户手动点「⬆️ 上传」按钮
 
   // 同步项目安排到日历面板（itinerary）
-  syncScheduleToCalendar();
+  init();
+syncScheduleToCalendar();
 
   triggerAutoSync();
 
@@ -10150,6 +10151,7 @@ function updateSyncIndicator(text) {
   el.style.color = states[text] || '#fff';
 }
 
+init();
 syncScheduleToCalendar();
 setTimeout(function() { downloadFromCloud(); }, 2000);
 
