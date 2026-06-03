@@ -7751,7 +7751,40 @@
       "type": "project",
       "lng": 116.8388,
       "lat": 38.3045,
-      "time": "2026/6/14-14",
+      "time": "2026/6/13-14",
+      "unlocked": null,
+      "person": ""
+    },
+    {
+      "id": "1780499041134o5s4uennt48",
+      "name": "深圳市",
+      "address": "深圳",
+      "type": "upcoming",
+      "lng": 114.0579,
+      "lat": 22.5431,
+      "time": "2026/6/9",
+      "unlocked": null,
+      "person": "程广超"
+    },
+    {
+      "id": "17804990794450y4hzgwdcw9",
+      "name": "驻马店市",
+      "address": "驻马店",
+      "type": "project",
+      "lng": 114.0247,
+      "lat": 33.0114,
+      "time": "2026/6/19-20",
+      "unlocked": null,
+      "person": ""
+    },
+    {
+      "id": "1780499209624lpk7vgim1q",
+      "name": "义乌市",
+      "address": "义乌市",
+      "type": "project",
+      "lng": 120.0751,
+      "lat": 29.3058,
+      "time": "2026/6/25-26",
       "unlocked": null,
       "person": ""
     }
@@ -8300,6 +8333,14 @@
         "locationId": "",
         "locationName": "",
         "source": "schedule"
+      },
+      {
+        "title": "伊利周播",
+        "color": "",
+        "person": "李彦赛",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
       }
     ],
     "2026-06-13": [
@@ -8363,6 +8404,36 @@
     "2026-06-26": [
       {
         "title": "义乌",
+        "color": "",
+        "person": "",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-06-09": [
+      {
+        "title": "CELL深圳",
+        "color": "",
+        "person": "程广超",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-06-18": [
+      {
+        "title": "伊利周播",
+        "color": "",
+        "person": "李彦赛",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-06-30": [
+      {
+        "title": "伊利周播",
         "color": "",
         "person": "",
         "locationId": "",
@@ -8816,7 +8887,39 @@
       "date": "2026-06-25",
       "endDate": "2026-06-26",
       "id": 1780498834132
+    },
+    {
+      "content": "伊利周播",
+      "person": "李彦赛",
+      "connector": "",
+      "date": "2026-06-12",
+      "endDate": "",
+      "id": 1780498896540
+    },
+    {
+      "content": "CELL深圳",
+      "person": "程广超",
+      "connector": "",
+      "date": "2026-06-09",
+      "endDate": "2026-06-09",
+      "id": 1780498945171
+    },
+    {
+      "content": "伊利周播",
+      "person": "李彦赛",
+      "connector": "",
+      "date": "2026-06-18",
+      "endDate": "2026-06-18",
+      "id": 1780498973333
+    },
+    {
+      "content": "伊利周播",
+      "person": "",
+      "connector": "",
+      "date": "2026-06-30",
+      "endDate": "2026-06-30",
+      "id": 1780499010414
     }
   ],
-  "exportTime": "2026-06-03T15:00:46.267Z"
+  "exportTime": "2026-06-03T15:08:23.912Z"
 }
