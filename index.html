@@ -5513,6 +5513,9 @@ function init() {
 
   applyTheme(currentTheme);
 
+  // 先加载用户足迹数据
+  loadUserFootprints();
+
   renderAllMarkers();
 
   renderFootprints();
@@ -5529,14 +5532,8 @@ function init() {
 
   updateItineraryStats();
 
-  
-
-  // 加载用户足迹数据
-
-  loadUserFootprints();
-
   // 自动从云端同步最新数据
-  setTimeout(() => { cloudLoadFootprints(); }, 2000);
+  // cloudLoadFootprints removed
 
 }
 
