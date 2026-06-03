@@ -2090,7 +2090,7 @@
 
   .visibility-toggle:hover { opacity: 0.7; }
 
-  .visibility-toggle.hidden { opacity: 0.15; text-decoration: line-through; }
+  .visibility-toggle.hidden { opacity: 0.2; }
 
 
 
@@ -3256,14 +3256,6 @@
     <span id="syncIndicator" style="font-size:12px;color:#00ff88;margin:0 6px;cursor:pointer;white-space:nowrap;" onclick="cloudLoadFootprints()" title="点击从云端下载">☁️ 下载</span>
 
     <button class="toolbar-btn" id="uploadBtn" title="上传数据到云端（需要密码）" style="background:linear-gradient(135deg,#00d4ff22,#7b2ff722);border-color:rgba(0,212,255,0.3);color:#00d4ff;font-size:13px;padding:5px 14px;" onclick="uploadToCloud()">⬆️ 上传</button>
-
-    <select id="addModeSelect" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:12px;padding:4px 8px;border-radius:6px;cursor:pointer;" title="双击地图添加标记的类型">
-      <option value="project" selected>🔴 近期项目</option>
-      <option value="upcoming">🟡 CGC项目</option>
-      <option value="completed">✅ 完成项目</option>
-      <option value="visited">📍 已去过</option>
-      <option value="wishlist">🌟 想去</option>
-    </select>
 
     <button class="toolbar-btn" id="fullscreenBtn" title="全屏" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:14px;padding:4px 10px;">⛶</button>
 
@@ -9033,7 +9025,7 @@ function renderSection(list, type, titleText, items, titleClass) {
 
   title.className = `list-section-title ${titleClass} ${window.sectionCollapsed?.[type] ? 'collapsed' : ''}`;
 
-  title.innerHTML = `${titleText} <span class="section-count">${items.length}</span><button class="visibility-toggle ${isHidden ? 'hidden' : ''}" title="${isHidden ? '显示地图标注' : '隐藏地图标注'}" onclick="event.stopPropagation(); toggleTypeVisibility('${type}');">${isHidden ? '🙈' : '👁️'}</button><span class="collapse-icon">▼</span>`;
+  title.innerHTML = `${titleText} <span class="section-count">${items.length}</span><button class="visibility-toggle ${isHidden ? 'hidden' : ''}" title="${isHidden ? '显示地图标注' : '隐藏地图标注'}" onclick="event.stopPropagation(); toggleTypeVisibility('${type}');">${isHidden ? '<span style="color:rgba(255,255,255,0.2);">⊙</span>' : '<span style="color:#00d4ff;">●</span>'}</button><span class="collapse-icon">▼</span>`;
 
   list.appendChild(title);
 
@@ -9139,7 +9131,7 @@ function renderLockedSection(list, type, titleText, count) {
 
     wrap.style.cssText = 'display:flex;gap:6px;padding:8px 12px;background:rgba(0,0,0,0.3);border-left:2px solid rgba(0,212,255,0.4);margin:2px 0 4px 0;';
 
-    wrap.innerHTML = '<input type="password" id="visitedPwdInput" placeholder="输入密码 5215181" style="flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;padding:6px 10px;border-radius:4px;font-size:13px;"><button id="visitedPwdBtn" style="background:rgba(0,212,255,0.2);border:1px solid rgba(0,212,255,0.3);color:#00d4ff;padding:6px 14px;border-radius:4px;cursor:pointer;font-size:13px;white-space:nowrap;">解锁</button>';
+    wrap.innerHTML = '<input type="password" id="visitedPwdInput" placeholder="请输入密码" style="flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;padding:6px 10px;border-radius:4px;font-size:13px;"><button id="visitedPwdBtn" style="background:rgba(0,212,255,0.2);border:1px solid rgba(0,212,255,0.3);color:#00d4ff;padding:6px 14px;border-radius:4px;cursor:pointer;font-size:13px;white-space:nowrap;">解锁</button>';
 
     title.after(wrap);
 
@@ -9328,6 +9320,12 @@ const VISIBILITY_KEY = 'travel_type_visibility';
 
 window.hiddenTypes = new Set(JSON.parse(localStorage.getItem(VISIBILITY_KEY) || '[]'));
 window.visitedUnlocked = false; // 已去过默认锁定，需密码 5215181
+
+// 手机端默认隐藏完成项目和已去过
+if (window.innerWidth <= 768 && !localStorage.getItem(VISIBILITY_KEY)) {
+  window.hiddenTypes.add('completed');
+  window.hiddenTypes.add('visited');
+}
 
 
 
@@ -10292,11 +10290,6 @@ function toggleMobilePanel(panel) {
 
 // ===== 页面初始化入口 =====
 (function startApp() {
-  // 绑定模式选择下拉
-  var modeSel = document.getElementById('addModeSelect');
-  if (modeSel) {
-    modeSel.addEventListener('change', function() { currentMode = this.value; });
-  }
   // 等待 Leaflet 加载就绪后执行 init
   function tryInit() {
     if (typeof L !== 'undefined') {
