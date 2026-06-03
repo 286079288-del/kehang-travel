@@ -1962,6 +1962,28 @@
 
   }
 
+  .fp-type-filter {
+    display: flex; gap: 6px; padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(0,0,0,0.15);
+    flex-wrap: wrap;
+  }
+  .fp-type-btn {
+    display: flex; align-items: center; gap: 4px;
+    padding: 6px 12px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: transparent; color: var(--text-secondary);
+    font-size: 12px; cursor: pointer; font-family: inherit;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .fp-type-btn.active {
+    background: rgba(255,255,255,0.08); color: #fff;
+    border-color: rgba(255,255,255,0.2);
+  }
+  .fp-type-btn.inactive { opacity: 0.45; }
+  .fp-type-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .fp-type-count { font-size: 10px; opacity: 0.6; margin-left: 2px; }
+
   .footprint-list {
 
     overflow-y: auto; flex: 1; display: flex; flex-direction: column;
@@ -3264,7 +3286,7 @@
 
 <!-- Mode Switch (hidden by default) -->
 
-<div id="modeSwitchContainer" style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:100;">
+<div id="modeSwitchContainer" style="display:none;position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:100;">
 
   <div class="mode-switch">
 
@@ -3426,6 +3448,21 @@
   <!-- Tab: 我的足迹 -->
 
   <div class="panel-content" id="panelFootprints" style="display:none;flex-direction:column;flex:1;overflow:hidden;">
+
+    <div class="fp-type-filter" id="fpTypeFilter">
+      <button class="fp-type-btn active" data-type="visited" onclick="toggleFpType('visited', this)">
+        <span class="fp-type-dot" style="background:#00d4ff"></span>已去过<span class="fp-type-count" id="fpCountVisited">0</span>
+      </button>
+      <button class="fp-type-btn active" data-type="upcoming" onclick="toggleFpType('upcoming', this)">
+        <span class="fp-type-dot" style="background:#ffd700"></span>CGC项目<span class="fp-type-count" id="fpCountUpcoming">0</span>
+      </button>
+      <button class="fp-type-btn active" data-type="project" onclick="toggleFpType('project', this)">
+        <span class="fp-type-dot" style="background:#ff4757"></span>近期项目<span class="fp-type-count" id="fpCountProject">0</span>
+      </button>
+      <button class="fp-type-btn" data-type="completed" onclick="toggleFpType('completed', this)" id="fpTypeBtnCompleted">
+        <span class="fp-type-dot" style="background:#2ed573"></span>完成项目<span class="fp-type-count" id="fpCountCompleted">0</span>
+      </button>
+    </div>
 
     <div class="footprint-list" id="footprintList"></div>
 
@@ -8937,6 +8974,35 @@ function refreshScheduleFromCalendar() {
 }
 
 
+
+
+// 足迹面板类型切换
+function toggleFpType(type, btn) {
+  if (type === "completed" && !window._completedUnlocked) {
+    unlockCompleted();
+    return;
+  }
+  if (window.hiddenTypes.has(type)) {
+    window.hiddenTypes.delete(type);
+    btn.classList.remove("inactive"); btn.classList.add("active");
+  } else {
+    window.hiddenTypes.add(type);
+    btn.classList.add("inactive"); btn.classList.remove("active");
+  }
+  localStorage.setItem(VISIBILITY_KEY, JSON.stringify([...window.hiddenTypes]));
+  renderAllMarkers();
+  renderFootprints();
+  updateStats();
+}
+
+function updateFpTypeCounts() {
+  var counts = { visited: 0, upcoming: 0, project: 0, completed: 0 };
+  footprints.forEach(function(f) { if (counts[f.type] !== undefined) counts[f.type]++; });
+  Object.keys(counts).forEach(function(t) {
+    var el = document.getElementById("fpCount" + t.charAt(0).toUpperCase() + t.slice(1));
+    if (el) el.textContent = counts[t];
+  });
+}
 
 function renderFootprints() {
 
