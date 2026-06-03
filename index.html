@@ -7703,7 +7703,7 @@ function addMarker(fp) {
 
 
 
-  const otherTypes = ['visited', 'upcoming', 'project'].filter(t => t !== fp.type);
+  const otherTypes = ['visited', 'upcoming', 'project', 'completed'].filter(t => t !== fp.type);
 
   const convertButtons = otherTypes.map(t => {
 
@@ -7833,7 +7833,7 @@ function updateMarkerPopup(fpId) {
 
 
 
-  const otherTypes = ['visited', 'upcoming', 'project'].filter(t => t !== fp.type);
+  const otherTypes = ['visited', 'upcoming', 'project', 'completed'].filter(t => t !== fp.type);
 
   const convertButtons = otherTypes.map(t => {
 
@@ -9161,7 +9161,7 @@ function createFootprintCard(fp, num) {
 
 
 
-  const otherTypes = ['visited', 'upcoming', 'project'].filter(t => t !== fp.type);
+  const otherTypes = ['visited', 'upcoming', 'project', 'completed'].filter(t => t !== fp.type);
 
   const convertButtons = otherTypes.map(t => {
 
