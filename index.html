@@ -10136,7 +10136,11 @@ function toggleMobilePanel(panel) {
     document.querySelector('.left-panel').classList.remove('mobile-show');
     document.querySelector('.footprint-panel').classList.remove('mobile-show');
   }
-})();
+    // 延迟渲染标记（等地图就绪）
+    setTimeout(function() {
+      if (typeof renderAllMarkers === 'function') renderAllMarkers();
+    }, 1000);
+  })();
 </script>
 
 </body>
