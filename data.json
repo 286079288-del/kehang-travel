@@ -7776,6 +7776,28 @@
       "time": "2026/6/25-26",
       "unlocked": null,
       "person": ""
+    },
+    {
+      "id": "17810874355616utd6n06m5a",
+      "name": "合肥市",
+      "address": "合肥",
+      "type": "project",
+      "lng": 117.2304,
+      "lat": 31.8206,
+      "time": "2026/6/19-20",
+      "unlocked": null,
+      "person": ""
+    },
+    {
+      "id": "1781087534395fmo8qf6o20f",
+      "name": "灵山",
+      "address": "109.2810, 22.3977",
+      "type": "project",
+      "lng": 109.281005859375,
+      "lat": 22.397681315256158,
+      "time": "2026/6/20-21",
+      "unlocked": null,
+      "person": ""
     }
   ],
   "itinerary": {
@@ -8350,11 +8372,35 @@
         "locationId": "",
         "locationName": "",
         "source": "schedule"
+      },
+      {
+        "title": "合肥",
+        "color": "",
+        "person": "",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
       }
     ],
     "2026-06-20": [
       {
         "title": "驻马店",
+        "color": "",
+        "person": "",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      },
+      {
+        "title": "灵山县",
+        "color": "",
+        "person": "",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      },
+      {
+        "title": "合肥",
         "color": "",
         "person": "",
         "locationId": "",
@@ -8413,6 +8459,16 @@
     "2026-06-30": [
       {
         "title": "伊利周播",
+        "color": "",
+        "person": "",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-06-21": [
+      {
+        "title": "灵山县",
         "color": "",
         "person": "",
         "locationId": "",
@@ -8846,7 +8902,7 @@
     {
       "content": "驻马店",
       "person": "",
-      "connector": "",
+      "connector": "赵悦",
       "date": "2026-06-19",
       "endDate": "2026-06-20",
       "id": 1780498714148
@@ -8854,7 +8910,7 @@
     {
       "content": "义乌",
       "person": "",
-      "connector": "",
+      "connector": "芯言",
       "date": "2026-06-25",
       "endDate": "2026-06-26",
       "id": 1780498834132
@@ -8898,7 +8954,23 @@
       "date": "2026-06-26",
       "endDate": "2026-06-26",
       "id": 1781078944678
+    },
+    {
+      "content": "灵山县",
+      "person": "",
+      "connector": "芯言",
+      "date": "2026-06-20",
+      "endDate": "2026-06-21",
+      "id": 1781087343459
+    },
+    {
+      "content": "合肥",
+      "person": "",
+      "connector": "雅婕",
+      "date": "2026-06-19",
+      "endDate": "2026-06-20",
+      "id": 1781087419953
     }
   ],
-  "exportTime": "2026-06-10T09:54:14.179Z"
+  "exportTime": "2026-06-10T10:37:39.861Z"
 }
