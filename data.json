@@ -7737,12 +7737,12 @@
       "id": "17804981118775wmo06jj1dt",
       "name": "九江市",
       "address": "九江",
-      "type": "upcoming",
+      "type": "completed",
       "lng": 116.0019,
       "lat": 29.7051,
       "time": "2026/6/12-13",
       "unlocked": null,
-      "person": ""
+      "person": "程广超"
     },
     {
       "id": "1780499041134o5s4uennt48",
@@ -7773,29 +7773,29 @@
       "type": "project",
       "lng": 120.0751,
       "lat": 29.3058,
+      "time": "2026/6/26-27",
+      "unlocked": null,
+      "person": ""
+    },
+    {
+      "id": "1781399782459iipem8pcdge",
+      "name": "蒙城县",
+      "address": "116.5265, 33.2617",
+      "type": "project",
+      "lng": 116.52648925781251,
+      "lat": 33.261656767328006,
       "time": "2026/6/25-26",
       "unlocked": null,
       "person": ""
     },
     {
-      "id": "17810874355616utd6n06m5a",
-      "name": "合肥市",
-      "address": "合肥",
+      "id": "1781400034560aicsixlws44",
+      "name": "呼和浩特",
+      "address": "111.7310, 40.8221",
       "type": "project",
-      "lng": 117.2304,
-      "lat": 31.8206,
-      "time": "2026/6/19-20",
-      "unlocked": null,
-      "person": ""
-    },
-    {
-      "id": "1781087534395fmo8qf6o20f",
-      "name": "灵山",
-      "address": "109.2810, 22.3977",
-      "type": "project",
-      "lng": 109.281005859375,
-      "lat": 22.397681315256158,
-      "time": "2026/6/20-21",
+      "lng": 111.73095703125001,
+      "lat": 40.82212357516945,
+      "time": "2026/6/27-28",
       "unlocked": null,
       "person": ""
     }
@@ -8372,45 +8372,11 @@
         "locationId": "",
         "locationName": "",
         "source": "schedule"
-      },
-      {
-        "title": "合肥",
-        "color": "",
-        "person": "",
-        "locationId": "",
-        "locationName": "",
-        "source": "schedule"
       }
     ],
     "2026-06-20": [
       {
         "title": "驻马店",
-        "color": "",
-        "person": "",
-        "locationId": "",
-        "locationName": "",
-        "source": "schedule"
-      },
-      {
-        "title": "灵山县",
-        "color": "",
-        "person": "",
-        "locationId": "",
-        "locationName": "",
-        "source": "schedule"
-      },
-      {
-        "title": "合肥",
-        "color": "",
-        "person": "",
-        "locationId": "",
-        "locationName": "",
-        "source": "schedule"
-      }
-    ],
-    "2026-06-25": [
-      {
-        "title": "义乌",
         "color": "",
         "person": "",
         "locationId": "",
@@ -8429,6 +8395,32 @@
       },
       {
         "title": "伊利周播",
+        "color": "",
+        "person": "",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      },
+      {
+        "title": "安徽蒙城县",
+        "color": "",
+        "person": "",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-06-27": [
+      {
+        "title": "义乌",
+        "color": "",
+        "person": "",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      },
+      {
+        "title": "内蒙古呼和浩特",
         "color": "",
         "person": "",
         "locationId": "",
@@ -8466,9 +8458,19 @@
         "source": "schedule"
       }
     ],
-    "2026-06-21": [
+    "2026-06-25": [
       {
-        "title": "灵山县",
+        "title": "安徽蒙城县",
+        "color": "",
+        "person": "",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-06-28": [
+      {
+        "title": "内蒙古呼和浩特",
         "color": "",
         "person": "",
         "locationId": "",
@@ -8910,9 +8912,9 @@
     {
       "content": "义乌",
       "person": "",
-      "connector": "芯言",
-      "date": "2026-06-25",
-      "endDate": "2026-06-26",
+      "connector": "雅婕",
+      "date": "2026-06-26",
+      "endDate": "2026-06-27",
       "id": 1780498834132
     },
     {
@@ -8956,21 +8958,21 @@
       "id": 1781078944678
     },
     {
-      "content": "灵山县",
+      "content": "安徽蒙城县",
       "person": "",
       "connector": "芯言",
-      "date": "2026-06-20",
-      "endDate": "2026-06-21",
-      "id": 1781087343459
+      "date": "2026-06-25",
+      "endDate": "2026-06-26",
+      "id": 1781087419953
     },
     {
-      "content": "合肥",
+      "content": "内蒙古呼和浩特",
       "person": "",
-      "connector": "雅婕",
-      "date": "2026-06-19",
-      "endDate": "2026-06-20",
-      "id": 1781087419953
+      "connector": "芯言",
+      "date": "2026-06-27",
+      "endDate": "2026-06-28",
+      "id": 1781400007231
     }
   ],
-  "exportTime": "2026-06-13T06:00:24.001Z"
+  "exportTime": "2026-06-14T01:21:55.685Z"
 }
