@@ -8146,7 +8146,9 @@ function init() {
   updateItineraryStats();
 
   // 自动从云端同步最新数据
-  setTimeout(() => { cloudLoadFootprints(); }, 2000);
+  setTimeout(() => {
+    // 不再自动下载，避免覆盖本地数据。请手动点击 ☁️ 同步
+  }, 2000);
 
 }
 
@@ -12846,19 +12848,14 @@ var _cloudRepo = '286079288-del/kehang-travel';
 var _cloudFile = 'data.json';
 
 async function downloadFromCloud() {
-  // 先尝试 raw.githubusercontent.com（国外快）
+  // 统一走 GitHub API，避免 raw.githubusercontent.com CDN 缓存
   try {
-    var r = await fetch('https://raw.githubusercontent.com/' + _cloudRepo + '/main/' + _cloudFile + '?t=' + Date.now(), {signal: AbortSignal.timeout(5000)});
-    if (r.ok) { var d = await r.json(); applyCloudData(d); showToast('☁️ 同步成功', 'success'); return; }
-  } catch(e) { /* raw 不通 */ }
-  // 国内备用：GitHub API
-  try {
-    var rr = await fetch('https://api.github.com/repos/' + _cloudRepo + '/contents/' + _cloudFile, {
-      headers: { 'Authorization': 'token ' + _cloudToken, 'Accept': 'application/vnd.github.v3.raw' },
-      signal: AbortSignal.timeout(8000)
+    var rr = await fetch('https://api.github.com/repos/' + _cloudRepo + '/contents/' + _cloudFile + '?t=' + Date.now(), {
+      headers: { 'Authorization': 'token ' + _cloudToken, 'Accept': 'application/vnd.github.v3.raw', 'Cache-Control': 'no-cache' },
+      signal: AbortSignal.timeout(10000)
     });
     if (rr.ok) { var dd = await rr.json(); applyCloudData(dd); showToast('☁️ 同步成功', 'success'); return; }
-  } catch(e) { /* API 也不通 */ }
+  } catch(e) { /* 网络异常 */ }
   console.warn('Cloud sync failed');
 }
 
@@ -12898,11 +12895,8 @@ async function uploadToCloud() {
 
 // Update toolbar buttons
 setTimeout(function() {
-  var si = document.getElementById('syncIndicator');
-  if (si) { si.textContent = '☁️ 同步'; si.onclick = downloadFromCloud; }
   var ub = document.getElementById('uploadBtn');
   if (ub) { ub.textContent = '⬆️ 上传'; ub.onclick = uploadToCloud; }
-  downloadFromCloud();
 }, 2000);
 
 </script>
