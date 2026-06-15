@@ -7764,18 +7764,18 @@
       "lat": 33.0114,
       "time": "2026/6/19-20",
       "unlocked": null,
-      "person": ""
+      "person": "程广超"
     },
     {
       "id": "1780499209624lpk7vgim1q",
       "name": "义乌市",
       "address": "义乌市",
-      "type": "project",
+      "type": "upcoming",
       "lng": 120.0751,
       "lat": 29.3058,
       "time": "2026/6/26-27",
       "unlocked": null,
-      "person": ""
+      "person": "程广超"
     },
     {
       "id": "1781399782459iipem8pcdge",
@@ -7786,7 +7786,7 @@
       "lat": 33.261656767328006,
       "time": "2026/6/25-26",
       "unlocked": null,
-      "person": ""
+      "person": "陈志勇"
     },
     {
       "id": "1781400034560aicsixlws44",
@@ -7797,7 +7797,51 @@
       "lat": 40.82212357516945,
       "time": "2026/6/27-28",
       "unlocked": null,
+      "person": "李彦赛"
+    },
+    {
+      "id": "1781528705080y8d6dw5499j",
+      "name": "兰州",
+      "address": "兰州",
+      "type": "project",
+      "lng": 103.8343,
+      "lat": 36.0611,
+      "time": "2026/6/20-21",
+      "unlocked": null,
+      "person": "骈一鑫"
+    },
+    {
+      "id": "1781528746728haj1h64sna",
+      "name": "西安市",
+      "address": "西安",
+      "type": "project",
+      "lng": 108.9398,
+      "lat": 34.3416,
+      "time": "2026/6/24-25",
+      "unlocked": null,
       "person": ""
+    },
+    {
+      "id": "1781529233276e60ywmcaraq",
+      "name": "安徽 砀山县",
+      "address": "116.3727, 34.4388",
+      "type": "project",
+      "lng": 116.37268066406251,
+      "lat": 34.43883333260527,
+      "time": "2026/6/27-28",
+      "unlocked": null,
+      "person": "骈一鑫"
+    },
+    {
+      "id": "1781529412441s0q7nmbb7z",
+      "name": "菏泽市",
+      "address": "菏泽",
+      "type": "project",
+      "lng": 115.481,
+      "lat": 35.2336,
+      "time": "2026/6/28-29",
+      "unlocked": null,
+      "person": "程广超"
     }
   ],
   "itinerary": {
@@ -7889,6 +7933,15 @@
       {
         "title": "短视频需要查看",
         "color": "",
+        "person": "程广超",
+        "locationId": "",
+        "locationName": ""
+      }
+    ],
+    "2026-06-16": [
+      {
+        "title": "包头",
+        "color": "#ff6b6b",
         "person": "程广超",
         "locationId": "",
         "locationName": ""
@@ -8340,7 +8393,7 @@
       {
         "title": "九江",
         "color": "",
-        "person": "",
+        "person": "程广超",
         "locationId": "",
         "locationName": "",
         "source": "schedule"
@@ -8358,7 +8411,7 @@
       {
         "title": "九江",
         "color": "",
-        "person": "",
+        "person": "程广超",
         "locationId": "",
         "locationName": "",
         "source": "schedule"
@@ -8366,9 +8419,9 @@
     ],
     "2026-06-19": [
       {
-        "title": "驻马店",
+        "title": "河南驻马店",
         "color": "",
-        "person": "",
+        "person": "程广超",
         "locationId": "",
         "locationName": "",
         "source": "schedule"
@@ -8376,9 +8429,17 @@
     ],
     "2026-06-20": [
       {
-        "title": "驻马店",
+        "title": "河南驻马店",
         "color": "",
-        "person": "",
+        "person": "程广超",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      },
+      {
+        "title": "甘肃兰州",
+        "color": "",
+        "person": "骈一鑫",
         "locationId": "",
         "locationName": "",
         "source": "schedule"
@@ -8388,7 +8449,7 @@
       {
         "title": "义乌",
         "color": "",
-        "person": "",
+        "person": "程广超",
         "locationId": "",
         "locationName": "",
         "source": "schedule"
@@ -8396,7 +8457,7 @@
       {
         "title": "伊利周播",
         "color": "",
-        "person": "",
+        "person": "李彦赛",
         "locationId": "",
         "locationName": "",
         "source": "schedule"
@@ -8404,7 +8465,7 @@
       {
         "title": "安徽蒙城县",
         "color": "",
-        "person": "",
+        "person": "陈智勇",
         "locationId": "",
         "locationName": "",
         "source": "schedule"
@@ -8414,7 +8475,7 @@
       {
         "title": "义乌",
         "color": "",
-        "person": "",
+        "person": "程广超",
         "locationId": "",
         "locationName": "",
         "source": "schedule"
@@ -8422,7 +8483,15 @@
       {
         "title": "内蒙古呼和浩特",
         "color": "",
-        "person": "",
+        "person": "李彦赛",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      },
+      {
+        "title": "安徽砀山",
+        "color": "",
+        "person": "骈一鑫",
         "locationId": "",
         "locationName": "",
         "source": "schedule"
@@ -8452,7 +8521,7 @@
       {
         "title": "伊利周播",
         "color": "",
-        "person": "",
+        "person": "李彦赛",
         "locationId": "",
         "locationName": "",
         "source": "schedule"
@@ -8462,7 +8531,15 @@
       {
         "title": "安徽蒙城县",
         "color": "",
-        "person": "",
+        "person": "陈智勇",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      },
+      {
+        "title": "陕西西安",
+        "color": "",
+        "person": "王志斌",
         "locationId": "",
         "locationName": "",
         "source": "schedule"
@@ -8472,7 +8549,53 @@
       {
         "title": "内蒙古呼和浩特",
         "color": "",
-        "person": "",
+        "person": "李彦赛",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      },
+      {
+        "title": "安徽砀山",
+        "color": "",
+        "person": "骈一鑫",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      },
+      {
+        "title": "山东菏泽",
+        "color": "",
+        "person": "程广超",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-06-21": [
+      {
+        "title": "甘肃兰州",
+        "color": "",
+        "person": "骈一鑫",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-06-24": [
+      {
+        "title": "陕西西安",
+        "color": "",
+        "person": "王志斌",
+        "locationId": "",
+        "locationName": "",
+        "source": "schedule"
+      }
+    ],
+    "2026-06-29": [
+      {
+        "title": "山东菏泽",
+        "color": "",
+        "person": "程广超",
         "locationId": "",
         "locationName": "",
         "source": "schedule"
@@ -8895,15 +9018,15 @@
     },
     {
       "content": "九江",
-      "person": "",
+      "person": "程广超",
       "connector": "赵悦",
       "date": "2026-06-12",
       "endDate": "2026-06-13",
       "id": 1780498063276
     },
     {
-      "content": "驻马店",
-      "person": "",
+      "content": "河南驻马店",
+      "person": "程广超",
       "connector": "赵悦",
       "date": "2026-06-19",
       "endDate": "2026-06-20",
@@ -8911,7 +9034,7 @@
     },
     {
       "content": "义乌",
-      "person": "",
+      "person": "程广超",
       "connector": "雅婕",
       "date": "2026-06-26",
       "endDate": "2026-06-27",
@@ -8943,7 +9066,7 @@
     },
     {
       "content": "伊利周播",
-      "person": "",
+      "person": "李彦赛",
       "connector": "",
       "date": "2026-06-30",
       "endDate": "2026-06-30",
@@ -8951,7 +9074,7 @@
     },
     {
       "content": "伊利周播",
-      "person": "",
+      "person": "李彦赛",
       "connector": "",
       "date": "2026-06-26",
       "endDate": "2026-06-26",
@@ -8959,7 +9082,7 @@
     },
     {
       "content": "安徽蒙城县",
-      "person": "",
+      "person": "陈智勇",
       "connector": "芯言",
       "date": "2026-06-25",
       "endDate": "2026-06-26",
@@ -8967,12 +9090,44 @@
     },
     {
       "content": "内蒙古呼和浩特",
-      "person": "",
+      "person": "李彦赛",
       "connector": "芯言",
       "date": "2026-06-27",
       "endDate": "2026-06-28",
       "id": 1781400007231
+    },
+    {
+      "content": "甘肃兰州",
+      "person": "骈一鑫",
+      "connector": "芯言",
+      "date": "2026-06-20",
+      "endDate": "2026-06-21",
+      "id": 1781528650950
+    },
+    {
+      "content": "陕西西安",
+      "person": "王志斌",
+      "connector": "雅婕",
+      "date": "2026-06-24",
+      "endDate": "2026-06-25",
+      "id": 1781528791450
+    },
+    {
+      "content": "安徽砀山",
+      "person": "骈一鑫",
+      "connector": "",
+      "date": "2026-06-27",
+      "endDate": "2026-06-28",
+      "id": 1781529319989
+    },
+    {
+      "content": "山东菏泽",
+      "person": "程广超",
+      "connector": "雅婕",
+      "date": "2026-06-28",
+      "endDate": "2026-06-29",
+      "id": 1781529399593
     }
   ],
-  "exportTime": "2026-06-14T01:25:59.682Z"
+  "exportTime": "2026-06-15T13:27:35.809Z"
 }
