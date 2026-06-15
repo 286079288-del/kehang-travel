@@ -12754,18 +12754,32 @@ var _cloudRepo = '286079288-del/kehang-travel';
 var _cloudFile = 'data.json';
 
 async function downloadFromCloud() {
+  // 先尝试 raw.githubusercontent.com（国外快）
   try {
-    var r = await fetch('https://raw.githubusercontent.com/' + _cloudRepo + '/main/' + _cloudFile + '?t=' + Date.now());
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    var d = await r.json();
-    if (d.footprints) { footprints = d.footprints; localStorage.setItem(STORAGE_KEY, JSON.stringify(footprints)); }
-    if (d.itinerary) { itinerary = d.itinerary; localStorage.setItem(ITINERARY_KEY, JSON.stringify(itinerary)); }
-    if (d.schedule) { scheduleItems = d.schedule; localStorage.setItem(SCHEDULE_KEY, JSON.stringify(scheduleItems)); }
-    renderAllMarkers(); renderFootprints(); updateStats();
-    renderCalendar(); renderDayDetail(); updateItineraryStats(); drawRouteLine(); renderDestinations();
-    showToast('☁️ 同步成功', 'success');
-  } catch(e) { console.warn('Sync failed:', e); }
+    var r = await fetch('https://raw.githubusercontent.com/' + _cloudRepo + '/main/' + _cloudFile + '?t=' + Date.now(), {signal: AbortSignal.timeout(5000)});
+    if (r.ok) { var d = await r.json(); applyCloudData(d); showToast('☁️ 同步成功', 'success'); return; }
+  } catch(e) { /* raw 不通 */ }
+  // 国内备用：GitHub API
+  try {
+    var rr = await fetch('https://api.github.com/repos/' + _cloudRepo + '/contents/' + _cloudFile, {
+      headers: { 'Authorization': 'token ' + _cloudToken, 'Accept': 'application/vnd.github.v3.raw' },
+      signal: AbortSignal.timeout(8000)
+    });
+    if (rr.ok) { var dd = await rr.json(); applyCloudData(dd); showToast('☁️ 同步成功', 'success'); return; }
+  } catch(e) { /* API 也不通 */ }
+  console.warn('Cloud sync failed');
 }
+
+function applyCloudData(d) {
+  if (d.footprints) { footprints = d.footprints; localStorage.setItem(STORAGE_KEY, JSON.stringify(footprints)); }
+  if (d.itinerary) { itinerary = d.itinerary; localStorage.setItem(ITINERARY_KEY, JSON.stringify(itinerary)); }
+  if (d.schedule) { scheduleItems = d.schedule; localStorage.setItem(SCHEDULE_KEY, JSON.stringify(scheduleItems)); }
+  renderAllMarkers(); renderFootprints(); updateStats();
+  renderCalendar(); renderDayDetail(); updateItineraryStats(); drawRouteLine(); renderDestinations();
+}
+
+// 下载别名（兼容旧调用）
+function cloudLoadFootprints() { downloadFromCloud(); }
 
 async function uploadToCloud() {
   var p = prompt('请输入上传密码：');
