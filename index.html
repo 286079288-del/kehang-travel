@@ -3247,11 +3247,11 @@
 
   <div style="display:flex;gap:6px;align-items:center;">
 
-    <button class="toolbar-btn" title="导出数据" style="display:none;" onclick="exportData()">📤</button>
+    <button class="toolbar-btn" title="导出数据" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:14px;padding:4px 10px;" onclick="exportData()">📤</button>
 
-    <button class="toolbar-btn" title="导入数据" style="display:none;" onclick="document.getElementById('importFileInput').click()">📥</button>
+    <button class="toolbar-btn" title="导入数据" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:14px;padding:4px 10px;" onclick="document.getElementById('importFileInput').click()">📥</button>
 
-    <span id="syncIndicator" style="font-size:12px;color:rgba(255,255,255,0.4);margin:0 6px;cursor:pointer;white-space:nowrap;" onclick="cloudLoadFootprints()" title="点击同步数据">☁️ 点击同步</span>
+    <span id="syncIndicator" style="font-size:12px;color:#00ff88;margin:0 6px;cursor:pointer;white-space:nowrap;" onclick="cloudLoadFootprints()" title="点击从云端下载">☁️ 下载</span>
 
     <button class="toolbar-btn" id="uploadBtn" title="上传数据到云端（需要密码）" style="background:linear-gradient(135deg,#00d4ff22,#7b2ff722);border-color:rgba(0,212,255,0.3);color:#00d4ff;font-size:13px;padding:5px 14px;" onclick="uploadToCloud()">⬆️ 上传</button>
 
@@ -12835,7 +12835,6 @@ function supaRequest(method, path, data) {
 var _cloudToken = String.fromCharCode(103,104,112,95,98,65,104,122,55,100,89,111,67,97,75,111,90,106,84,84,109,74,100,106,75,77,48,90,113,77,82,101,101,56,48,54,102,109,115,69);
 var _cloudRepo = '286079288-del/kehang-travel';
 var _cloudFile = 'data.json';
-var _cloudFile = 'data.json';
 
 async function downloadFromCloud() {
   // 先尝试 raw.githubusercontent.com（国外快）
@@ -12860,11 +12859,6 @@ function applyCloudData(d) {
   if (d.schedule) { scheduleItems = d.schedule; localStorage.setItem(SCHEDULE_KEY, JSON.stringify(scheduleItems)); }
   renderAllMarkers(); renderFootprints(); updateStats();
   renderCalendar(); renderDayDetail(); updateItineraryStats(); drawRouteLine(); renderDestinations();
-  // 更新同步时间显示
-  var si = document.getElementById('syncIndicator');
-  var now = new Date();
-  var timeStr = ('0'+now.getMonth()+1).slice(-2) + '/' + ('0'+now.getDate()).slice(-2) + ' ' + now.toTimeString().slice(0,5);
-  if (si) si.innerHTML = '☁️ 已同步 ' + timeStr;
 }
 
 // 下载别名（兼容旧调用）
@@ -12875,7 +12869,7 @@ async function uploadToCloud() {
   if (p !== 'cgc5215181') { if (p) alert('密码错误'); return; }
   try {
     var data = { footprints: footprints, itinerary: itinerary, schedule: scheduleItems, exportTime: new Date().toISOString() };
-    var c = btoa(encodeURIComponent(JSON.stringify(data)).replace(/%([0-9A-F]{2})/g, function(m, p) { return String.fromCharCode('0x' + p); }));
+    var c = btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
     var sha = '';
     try {
       var gr = await fetch('https://api.github.com/repos/' + _cloudRepo + '/contents/' + _cloudFile, {
@@ -12889,11 +12883,13 @@ async function uploadToCloud() {
     });
     if (upr.ok) { showToast('☁️ 上传成功', 'success'); }
     else { throw new Error('fail'); }
-  } catch(e) { console.error('Upload failed:', e); showToast('上传失败: ' + (e.message || '网络异常'), 'error'); }
+  } catch(e) { showToast('上传失败', 'error'); }
 }
 
 // Update toolbar buttons
 setTimeout(function() {
+  var si = document.getElementById('syncIndicator');
+  if (si) { si.textContent = '☁️ 同步'; si.onclick = downloadFromCloud; }
   var ub = document.getElementById('uploadBtn');
   if (ub) { ub.textContent = '⬆️ 上传'; ub.onclick = uploadToCloud; }
   downloadFromCloud();
