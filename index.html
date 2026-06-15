@@ -5811,7 +5811,21 @@ const COUNTY_COORDS = {
   '路氹城': [113.575, 22.1385],
 };
 
-
+// ===== 内置中国主要城市/景点数据（从CITY_COORDS和COUNTY_COORDS生成）=====
+const CHINA_LOCATIONS = [
+  ...Object.entries(CITY_COORDS).map(([name, coords]) => ({
+    name: name + (name.endsWith('市') || name.endsWith('盟') || name.endsWith('州') || name.endsWith('区') || name.endsWith('县') ? '' : '市'),
+    address: name,
+    lat: coords[1],
+    lon: coords[0]
+  })),
+  ...Object.entries(COUNTY_COORDS).map(([name, coords]) => ({
+    name: name,
+    address: name,
+    lat: coords[1],
+    lon: coords[0]
+  }))
+];
 
 // ===== Search using 本地数据（无需联网）=====
 
