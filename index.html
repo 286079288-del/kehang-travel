@@ -12875,7 +12875,7 @@ async function uploadToCloud() {
   if (p !== 'cgc5215181') { if (p) alert('密码错误'); return; }
   try {
     var data = { footprints: footprints, itinerary: itinerary, schedule: scheduleItems, exportTime: new Date().toISOString() };
-    var c = btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
+    var c = btoa(encodeURIComponent(JSON.stringify(data)).replace(/%([0-9A-F]{2})/g, function(m, p) { return String.fromCharCode('0x' + p); }));
     var sha = '';
     try {
       var gr = await fetch('https://api.github.com/repos/' + _cloudRepo + '/contents/' + _cloudFile, {
@@ -12889,7 +12889,7 @@ async function uploadToCloud() {
     });
     if (upr.ok) { showToast('☁️ 上传成功', 'success'); }
     else { throw new Error('fail'); }
-  } catch(e) { showToast('上传失败', 'error'); }
+  } catch(e) { console.error('Upload failed:', e); showToast('上传失败: ' + (e.message || '网络异常'), 'error'); }
 }
 
 // Update toolbar buttons
