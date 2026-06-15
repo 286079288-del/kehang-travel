@@ -11434,6 +11434,60 @@ function saveScheduleItem() {
   closeScheduleItemModal();
   renderProjectSchedule();
 
+  // 自动在地图上创建项目标记
+  try {
+    autoCreateFootprintFromSchedule(content, person, date);
+  } catch(e) { console.warn('auto footprint failed:', e); }
+
+}
+
+// 从项目安排内容中提取地点并自动创建足迹标记
+function autoCreateFootprintFromSchedule(content, person, dateStr) {
+  if (!content || !CHINA_LOCATIONS || !CHINA_LOCATIONS.length) return;
+  
+  // 先尝试精确匹配
+  var found = CHINA_LOCATIONS.find(function(loc) { return loc.name === content; });
+  
+  // 如果没精确匹配，提取前2-4个字尝试匹配
+  if (!found) {
+    var tokens = [content.substring(0, 2), content.substring(0, 3), content.substring(0, 4)];
+    for (var i = 0; i < tokens.length; i++) {
+      found = CHINA_LOCATIONS.find(function(loc) { return loc.name === tokens[i]; });
+      if (found) break;
+    }
+  }
+  
+  // 如果还没找到，尝试模糊匹配（content包含地名或地名包含在content中）
+  if (!found && content.length >= 2) {
+    found = CHINA_LOCATIONS.find(function(loc) {
+      return loc.name.length >= 2 && (content.indexOf(loc.name) >= 0 || loc.name.indexOf(content.substring(0, loc.name.length)) >= 0);
+    });
+  }
+  
+  if (!found) return; // 没找到地名，不创建
+  
+  // 检查是否已存在同名足迹
+  var exists = footprints.some(function(fp) { return fp.name === found.name && fp.type === 'project'; });
+  if (exists) return;
+  
+  // 创建足迹
+  var timeStr = dateStr ? dateStr.replace(/-/g, '/') + ' 项目安排' : new Date().toLocaleString('zh-CN');
+  var newFp = {
+    id: 'sch_' + Date.now(),
+    name: found.name,
+    address: found.address || found.name,
+    type: 'project',
+    lng: found.lon,
+    lat: found.lat,
+    time: timeStr,
+    person: person || '',
+    unlocked: 0
+  };
+  footprints.push(newFp);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(footprints));
+  addMarker(newFp);
+  renderFootprints();
+  updateStats();
 }
 
 
