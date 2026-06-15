@@ -10124,6 +10124,20 @@ function save() {
 
 // ===== Markers =====
 
+// 格式化足迹日期显示（支持日期范围）
+function formatFpDate(fp) {
+  if (!fp.time) return '';
+  var startDate = fp.time.split(' ')[0].replace(/\s*点亮\s*$/, '').replace(/\//g, '/'); // e.g. "2026/6/12"
+  if (fp.endDate) {
+    var endParts = fp.endDate.split('-'); // e.g. "2026-06-13"
+    if (endParts.length === 3) {
+      var endStr = parseInt(endParts[1]) + '/' + parseInt(endParts[2]); // "6/13"
+      return startDate + '-' + endStr;
+    }
+  }
+  return startDate;
+}
+
 function addMarker(fp) {
 
   const markerContent = document.createElement('div');
@@ -10227,8 +10241,7 @@ function addMarker(fp) {
   } else if (fp.type === 'project') {
 
     const personInline = fp.person ? `<span class="label-person">${fp.person}</span>` : '';
-
-    const dateHtml = fp.time ? `<div class="marker-date project-date">${fp.time.split(' ')[0].replace(/\s*点亮\s*$/, '')}</div>` : '';
+    const dateHtml = fp.time ? `<div class="marker-date project-date">${formatFpDate(fp)}</div>` : '';
 
     markerContent.innerHTML = `
 
@@ -11436,13 +11449,13 @@ function saveScheduleItem() {
 
   // 自动在地图上创建项目标记
   try {
-    autoCreateFootprintFromSchedule(content, person, date);
+    autoCreateFootprintFromSchedule(content, person, date, endDate);
   } catch(e) { console.warn('auto footprint failed:', e); }
 
 }
 
 // 从项目安排内容中提取地点并自动创建足迹标记
-function autoCreateFootprintFromSchedule(content, person, dateStr) {
+function autoCreateFootprintFromSchedule(content, person, dateStr, endDateStr) {
   if (!content || !CHINA_LOCATIONS || !CHINA_LOCATIONS.length) return;
   
   // 先尝试精确匹配
@@ -11480,6 +11493,7 @@ function autoCreateFootprintFromSchedule(content, person, dateStr) {
     lng: found.lon,
     lat: found.lat,
     time: timeStr,
+    endDate: endDateStr || '',
     person: person || '',
     unlocked: 0
   };
