@@ -10127,15 +10127,20 @@ function save() {
 // 格式化足迹日期显示（支持日期范围）
 function formatFpDate(fp) {
   if (!fp.time) return '';
-  var startDate = fp.time.split(' ')[0].replace(/\s*点亮\s*$/, '').replace(/\//g, '/'); // e.g. "2026/6/12"
+  var startDate = fp.time.split(' ')[0].replace(/\s*点亮\s*$/, '');
+  // 提取年/月/日
+  var parts = startDate.split('/');
+  if (parts.length < 3) return startDate;
+  // 简洁格式:月/日
+  var startStr = parseInt(parts[1]) + '/' + parseInt(parts[2]);
   if (fp.endDate) {
-    var endParts = fp.endDate.split('-'); // e.g. "2026-06-13"
+    var endParts = fp.endDate.split('-');
     if (endParts.length === 3) {
-      var endStr = parseInt(endParts[1]) + '/' + parseInt(endParts[2]); // "6/13"
-      return startDate + '-' + endStr;
+      var endStr = parseInt(endParts[1]) + '/' + parseInt(endParts[2]);
+      if (endStr !== startStr) return startStr + '-' + endStr;
     }
   }
-  return startDate;
+  return startStr;
 }
 
 function addMarker(fp) {
@@ -11480,8 +11485,18 @@ function autoCreateFootprintFromSchedule(content, person, dateStr, endDateStr) {
   if (!found) return; // 没找到地名，不创建
   
   // 检查是否已存在同名足迹
-  var exists = footprints.some(function(fp) { return fp.name === found.name && fp.type === 'project'; });
-  if (exists) return;
+  var existsFp = footprints.find(function(fp) { return fp.name === found.name && fp.type === 'project'; });
+  if (existsFp) {
+    // 已存在：更新日期范围和人
+    if (endDateStr) existsFp.endDate = endDateStr;
+    if (person) existsFp.person = person;
+    if (dateStr) existsFp.time = dateStr.replace(/-/g, '/') + ' 项目安排';
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(footprints));
+    if (markers[existsFp.id]) { map.removeLayer(markers[existsFp.id]); delete markers[existsFp.id]; }
+    addMarker(existsFp);
+    renderFootprints();
+    return;
+  }
   
   // 创建足迹
   var timeStr = dateStr ? dateStr.replace(/-/g, '/') + ' 项目安排' : new Date().toLocaleString('zh-CN');
