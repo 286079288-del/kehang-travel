@@ -12832,6 +12832,15 @@ function supaRequest(method, path, data) {
 }
 
 // ===== GitHub 云同步 =====
+// AbortSignal.timeout polyfill for older browsers
+if (!AbortSignal.timeout) {
+  AbortSignal.timeout = function(ms) {
+    var controller = new AbortController();
+    setTimeout(function() { controller.abort(); }, ms);
+    return controller.signal;
+  };
+}
+
 var _cloudToken = String.fromCharCode(103,104,112,95,98,65,104,122,55,100,89,111,67,97,75,111,90,106,84,84,109,74,100,106,75,77,48,90,113,77,82,101,101,56,48,54,102,109,115,69);
 var _cloudRepo = '286079288-del/kehang-travel';
 var _cloudFile = 'data.json';
@@ -12859,6 +12868,7 @@ function applyCloudData(d) {
   if (d.schedule) { scheduleItems = d.schedule; localStorage.setItem(SCHEDULE_KEY, JSON.stringify(scheduleItems)); }
   renderAllMarkers(); renderFootprints(); updateStats();
   renderCalendar(); renderDayDetail(); updateItineraryStats(); drawRouteLine(); renderDestinations();
+  renderProjectSchedule(); // 刷新项目安排面板
 }
 
 // 下载别名（兼容旧调用）
@@ -12869,7 +12879,7 @@ async function uploadToCloud() {
   if (p !== 'cgc5215181') { if (p) alert('密码错误'); return; }
   try {
     var data = { footprints: footprints, itinerary: itinerary, schedule: scheduleItems, exportTime: new Date().toISOString() };
-    var c = btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
+    var c = btoa(encodeURIComponent(JSON.stringify(data)).replace(/%([0-9A-F]{2})/g, function(m, p) { return String.fromCharCode('0x' + p); }));
     var sha = '';
     try {
       var gr = await fetch('https://api.github.com/repos/' + _cloudRepo + '/contents/' + _cloudFile, {
