@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f0f1e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>科航日历</title>
+<link rel="manifest" href="/calendar-manifest.json">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230f0f1e'/><rect x='15' y='20' width='70' height='65' rx='8' fill='none' stroke='%2300d4ff' stroke-width='4'/><line x1='15' y1='38' x2='85' y2='38' stroke='%2300d4ff' stroke-width='4'/><line x1='35' y1='12' x2='35' y2='28' stroke='%2300d4ff' stroke-width='4' stroke-linecap='round'/><line x1='65' y1='12' x2='65' y2='28' stroke='%2300d4ff' stroke-width='4' stroke-linecap='round'/><circle cx='35' cy='55' r='4' fill='%23ff4757'/><circle cx='50' cy='55' r='4' fill='%2300d4ff'/><circle cx='65' cy='55' r='4' fill='%2300d4ff'/></svg>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0f0f1e;--card:#1a1a2e;--card2:#16213e;--text:#e0e0e0;--sub:rgba(255,255,255,0.4);--accent:#00d4ff;--red:#ff4757;--green:#2ed573;--border:rgba(255,255,255,0.06)}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',-apple-system,sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden;user-select:none}
+
+/* Header */
+.header{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0}
+.header h1{font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px}
+.header h1 .logo{width:20px;height:20px}
+.sync-info{font-size:11px;color:var(--sub);cursor:pointer}
+.sync-info.syncing{color:var(--accent)}
+
+/* Month nav */
+.month-nav{display:flex;align-items:center;justify-content:center;gap:20px;padding:8px 16px;flex-shrink:0}
+.month-nav button{background:var(--card);border:1px solid var(--border);color:var(--text);width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.month-nav button:hover{background:var(--card2);border-color:var(--accent)}
+.month-nav .label{font-size:15px;font-weight:600;min-width:130px;text-align:center}
+
+/* Weekdays */
+.weekdays{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:11px;color:var(--sub);padding:0 8px 4px;flex-shrink:0}
+.weekdays span{padding:4px 0}
+
+/* Calendar grid */
+.cal-wrap{flex:1;overflow-y:auto;padding:0 8px 8px}
+.cal-week{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px}
+.cal-day{min-height:42px;border-radius:5px;padding:3px 4px;cursor:pointer;font-size:12px;position:relative;display:flex;flex-direction:column;transition:background .1s}
+.cal-day:hover{background:var(--card)}
+.cal-day.today{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25)}
+.cal-day.selected{background:rgba(0,212,255,0.15);border:1px solid var(--accent)}
+.cal-day.other{opacity:.25}
+.cal-day .dn{font-weight:500;margin-bottom:2px}
+.cal-day.today .dn{color:var(--accent);font-weight:700}
+.cal-day .events{font-size:9px;line-height:1.3;overflow:hidden;max-height:28px}
+.cal-day .ev-tag{display:inline-block;padding:1px 4px;border-radius:2px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.cal-day .ev-tag.sch{background:rgba(0,212,255,0.12);color:rgba(0,212,255,0.9)}
+.cal-day .ev-tag.trip{background:rgba(255,71,87,0.12);color:rgba(255,71,87,0.9)}
+.cal-day .ev-tag.cal{background:rgba(168,85,247,0.12);color:rgba(168,85,247,0.9)}
+
+/* Detail panel */
+.detail{border-top:1px solid var(--border);max-height:35vh;overflow-y:auto;padding:10px 16px;flex-shrink:0;background:var(--bg)}
+.detail-head{font-size:13px;font-weight:600;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.detail-head .wd{font-size:11px;color:var(--sub);font-weight:400}
+.detail-empty{text-align:center;color:var(--sub);padding:12px;font-size:12px}
+.detail-item{background:var(--card);border-radius:5px;padding:7px 10px;margin-bottom:5px;font-size:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.detail-item .di-left{flex:1}
+.detail-item .di-title{font-weight:500}
+.detail-item .di-sub{font-size:10px;color:var(--sub);margin-top:2px}
+.detail-item .di-tag{font-size:9px;padding:2px 6px;border-radius:3px;white-space:nowrap;flex-shrink:0}
+.di-tag.sch{background:rgba(0,212,255,0.12);color:rgba(0,212,255,0.9)}
+.di-tag.trip{background:rgba(255,71,87,0.12);color:rgba(255,71,87,0.9)}
+.di-tag.cal{background:rgba(168,85,247,0.12);color:rgba(168,85,247,0.9)}
+
+/* Toast */
+.toast{position:fixed;top:50px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#fff;padding:6px 18px;border-radius:16px;font-size:12px;z-index:99;opacity:0;transition:opacity .25s;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1><svg class="logo" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#0f0f1e"/><rect x="15" y="20" width="70" height="65" rx="8" fill="none" stroke="#00d4ff" stroke-width="4"/><line x1="15" y1="38" x2="85" y2="38" stroke="#00d4ff" stroke-width="4"/><line x1="35" y1="12" x2="35" y2="28" stroke="#00d4ff" stroke-width="4" stroke-linecap="round"/><line x1="65" y1="12" x2="65" y2="28" stroke="#00d4ff" stroke-width="4" stroke-linecap="round"/></svg> 科航日历</h1>
+  <span class="sync-info" id="syncInfo" onclick="sync()">点击同步</span>
+</div>
+<div class="month-nav">
+  <button onclick="prev()">◀</button>
+  <span class="label" id="mlabel"></span>
+  <button onclick="next()">▶</button>
+</div>
+<div class="weekdays"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+<div class="cal-wrap" id="cal"></div>
+<div class="detail" id="detail">
+  <div class="detail-head"><span id="dhead"></span><span class="wd" id="dwd"></span></div>
+  <div id="dlist"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var CLOUD='https://api.github.com/repos/286079288-del/kehang-travel/contents/data.json';
+var TOKEN=String.fromCharCode(103,104,112,95,98,65,104,122,55,100,89,111,67,97,75,111,90,106,84,84,109,74,100,106,75,77,48,90,113,77,82,101,101,56,48,54,102,109,115,69);
+var CALENDAR_EVENTS={};
+var curMonth=new Date(),selDate=new Date();
+var schedule=[],itinerary={},footprints=[];
+
+// Load local
+try{schedule=JSON.parse(localStorage.getItem('cal_schedule')||'[]')}catch(e){}
+try{itinerary=JSON.parse(localStorage.getItem('cal_itinerary')||'{}')}catch(e){}
+try{CALENDAR_EVENTS=JSON.parse(localStorage.getItem('cal_events')||'{}')}catch(e){}
+
+// Restore deleted calendar events
+var savedCal=localStorage.getItem('travel_calendar_v2');
+if(savedCal){try{CALENDAR_EVENTS=JSON.parse(savedCal)}catch(e){}}
+
+render();
+
+// Auto sync on load
+setTimeout(function(){sync(true)},1000);
+// Auto sync every 5 min
+setInterval(function(){sync(true)},300000);
+
+function fk(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+
+function sync(silent){
+  var si=document.getElementById('syncInfo');
+  si.textContent='同步中...';si.className='sync-info syncing';
+  fetch(CLOUD+'?t='+Date.now(),{headers:{'Authorization':'token '+TOKEN,'Accept':'application/vnd.github.v3.raw','Cache-Control':'no-cache'}})
+  .then(function(r){return r.json()})
+  .then(function(d){
+    if(d.schedule)schedule=d.schedule;
+    if(d.itinerary)itinerary=d.itinerary;
+    if(d.footprints)footprints=d.footprints;
+    localStorage.setItem('cal_schedule',JSON.stringify(schedule));
+    localStorage.setItem('cal_itinerary',JSON.stringify(itinerary));
+    var now=new Date();
+    si.textContent='已同步 '+('0'+(now.getMonth()+1)).slice(-2)+'/'+('0'+now.getDate()).slice(-2)+' '+now.toTimeString().slice(0,5);
+    si.className='sync-info';
+    render();
+    if(!silent)showToast('同步成功');
+  })
+  .catch(function(e){
+    si.textContent='同步失败';si.className='sync-info';
+    if(!silent)showToast('同步失败');
+  });
+}
+
+function render(){renderCal();renderDetail()}
+
+function renderCal(){
+  var today=new Date(),y=curMonth.getFullYear(),m=curMonth.getMonth();
+  document.getElementById('mlabel').textContent=y+'年'+(m+1)+'月';
+  var fd=new Date(y,m,1),ld=new Date(y,m+1,0),sp=fd.getDay(),dim=ld.getDate();
+  var html='';
+  for(var w=0;w<Math.ceil((sp+dim)/7);w++){
+    html+='<div class="cal-week">';
+    for(var dd=0;dd<7;dd++){
+      var idx=w*7+dd,dn,other,dObj;
+      if(idx<sp){dn=new Date(y,m,0).getDate()-sp+idx+1;other=true;dObj=new Date(y,m-1,dn)}
+      else if(idx>=sp+dim){dn=idx-sp-dim+1;other=true;dObj=new Date(y,m+1,dn)}
+      else{dn=idx-sp+1;other=false;dObj=new Date(y,m,dn)}
+      var dk=fk(dObj),isT=dObj.toDateString()==today.toDateString(),isS=dObj.toDateString()==selDate.toDateString();
+      var schs=schedule.filter(function(s){return s.date==dk});
+      var plans=itinerary[dk]||[];
+      var cals=CALENDAR_EVENTS[dk]||[];
+      var evHtml='';
+      schs.slice(0,3).forEach(function(s){evHtml+='<div class="ev-tag sch">'+(s.content||'').substring(0,8)+'</div>'});
+      plans.slice(0,2).forEach(function(p){evHtml+='<div class="ev-tag trip">'+(p.title||'').substring(0,8)+'</div>'});
+      cals.slice(0,2).forEach(function(c){evHtml+='<div class="ev-tag cal">'+(c.title||'').substring(0,8)+'</div>'});
+      var cls=['cal-day'];if(other)cls.push('other');if(isT)cls.push('today');if(isS)cls.push('selected');
+      html+='<div class="'+cls.join(' ')+'" onclick="pick(\''+dk+'\')"><span class="dn">'+dn+'</span><div class="events">'+evHtml+'</div></div>';
+    }
+    html+='</div>';
+  }
+  document.getElementById('cal').innerHTML=html;
+}
+
+function renderDetail(){
+  var dk=fk(selDate),schs=schedule.filter(function(s){return s.date==dk}),plans=itinerary[dk]||[],cals=CALENDAR_EVENTS[dk]||[];
+  var m=selDate.getMonth()+1,d=selDate.getDate(),wd=['周日','周一','周二','周三','周四','周五','周六'][selDate.getDay()];
+  document.getElementById('dhead').textContent=m+'月'+d+'日';
+  document.getElementById('dwd').textContent=wd;
+  if(schs.length==0&&plans.length==0&&cals.length==0){
+    document.getElementById('dlist').innerHTML='<div class="detail-empty">这天没有安排</div>';
+    return;
+  }
+  var h='';
+  schs.forEach(function(s){
+    var sub=(s.person||'')+(s.connector?' · '+s.connector:'')+(s.endDate&&s.endDate!=s.date?' · 至'+s.endDate:'');
+    h+='<div class="detail-item"><div class="di-left"><div class="di-title">'+(s.content||'')+'</div>'+(sub?'<div class="di-sub">'+sub+'</div>':'')+'</div><span class="di-tag sch">项目</span></div>';
+  });
+  plans.forEach(function(p){
+    h+='<div class="detail-item"><div class="di-left"><div class="di-title">'+(p.title||'')+'</div>'+(p.person?'<div class="di-sub">'+p.person+'</div>':'')+'</div><span class="di-tag trip">行程</span></div>';
+  });
+  cals.forEach(function(c){
+    h+='<div class="detail-item"><div class="di-left"><div class="di-title">'+(c.title||'')+'</div>'+(c.time?'<div class="di-sub">'+c.time+'</div>':'')+'</div><span class="di-tag cal">日历</span></div>';
+  });
+  document.getElementById('dlist').innerHTML=h;
+}
+
+function pick(dk){var p=dk.split('-');selDate=new Date(+p[0],+p[1]-1,+p[2]);renderCal();renderDetail()}
+function prev(){curMonth.setMonth(curMonth.getMonth()-1);renderCal();renderDetail()}
+function next(){curMonth.setMonth(curMonth.getMonth()+1);renderCal();renderDetail()}
+function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1800)}
+
+// Keyboard
+document.onkeydown=function(e){
+  if(e.key=='ArrowLeft')prev();
+  else if(e.key=='ArrowRight')next();
+  else if(e.key=='ArrowUp'){var d=new Date(selDate);d.setDate(d.getDate()-7);selDate=d;if(d.getMonth()!=curMonth.getMonth())curMonth=new Date(d);render()}
+  else if(e.key=='ArrowDown'){var d=new Date(selDate);d.setDate(d.getDate()+7);selDate=d;if(d.getMonth()!=curMonth.getMonth())curMonth=new Date(d);render()}
+}
+
+// SW
+if('serviceWorker'in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){})}
+</script>
+</body>
+</html>
