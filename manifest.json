@@ -2,7 +2,7 @@
   "name": "科航日历",
   "short_name": "科航日历",
   "description": "项目安排与行程日历",
-  "start_url": "/kehang-travel/calendar.html",
+  "start_url": "/kehang-travel/",
   "display": "standalone",
   "background_color": "#1a1a2e",
   "theme_color": "#1a1a2e",
