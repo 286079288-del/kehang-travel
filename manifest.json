@@ -1,0 +1,14 @@
+{
+  "name": "科航日历",
+  "short_name": "科航日历",
+  "description": "项目安排与行程日历",
+  "start_url": "/kehang-travel/calendar.html",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "icons": [{
+    "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1a2e'/><text x='50' y='68' text-anchor='middle' font-size='52'>📅</text></svg>",
+    "sizes": "any",
+    "type": "image/svg+xml"
+  }]
+}
