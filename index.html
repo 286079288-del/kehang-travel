@@ -12853,16 +12853,74 @@ var _cloudToken = String.fromCharCode(103,104,112,95,98,65,104,122,55,100,89,111
 var _cloudRepo = '286079288-del/kehang-travel';
 var _cloudFile = 'data.json';
 
-async function downloadFromCloud() {
-  // 统一走 GitHub API，避免 raw.githubusercontent.com CDN 缓存
+// UTF-8 safe base64 encode (no deprecated unescape)
+function _base64Encode(str) {
+  var bytes = new TextEncoder().encode(str);
+  var bin = '';
+  for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+
+async function _fetchCloudData(url, timeoutMs) {
+  var resp = await fetch(url, {
+    headers: { 'Authorization': 'token ' + _cloudToken, 'Accept': 'application/vnd.github.v3.raw', 'Cache-Control': 'no-cache' },
+    signal: AbortSignal.timeout(timeoutMs || 10000)
+  });
+  if (!resp.ok) throw new Error('HTTP ' + resp.status);
+  return await resp.json();
+}
+
+async function downloadFromCloud(retryCount) {
+  retryCount = retryCount || 0;
+  var si = document.getElementById('syncIndicator');
+  if (si) si.textContent = '☁️ 同步中...';
+
+  // 方案1: api.github.com
   try {
-    var rr = await fetch('https://api.github.com/repos/' + _cloudRepo + '/contents/' + _cloudFile + '?t=' + Date.now(), {
-      headers: { 'Authorization': 'token ' + _cloudToken, 'Accept': 'application/vnd.github.v3.raw', 'Cache-Control': 'no-cache' },
+    var dd = await _fetchCloudData('https://api.github.com/repos/' + _cloudRepo + '/contents/' + _cloudFile + '?t=' + Date.now(), 8000);
+    applyCloudData(dd);
+    if (si) { si.textContent = '☁️ 已同步 ' + new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}); }
+    showToast('☁️ 同步成功', 'success');
+    return;
+  } catch(e1) {
+    console.warn('api.github.com failed:', e1.message || e1);
+  }
+
+  // 方案2: raw.githubusercontent.com (国内备用)
+  try {
+    var dd2 = await _fetchCloudData('https://raw.githubusercontent.com/' + _cloudRepo + '/main/' + _cloudFile + '?t=' + Date.now(), 10000);
+    applyCloudData(dd2);
+    if (si) { si.textContent = '☁️ 已同步 ' + new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}); }
+    showToast('☁️ 同步成功(备用)', 'success');
+    return;
+  } catch(e2) {
+    console.warn('raw.githubusercontent.com failed:', e2.message || e2);
+  }
+
+  // 方案3: jsdelivr CDN (国内最快CDN)
+  try {
+    var resp3 = await fetch('https://cdn.jsdelivr.net/gh/' + _cloudRepo + '@main/' + _cloudFile + '?t=' + Date.now(), {
       signal: AbortSignal.timeout(10000)
     });
-    if (rr.ok) { var dd = await rr.json(); applyCloudData(dd); showToast('☁️ 同步成功', 'success'); return; }
-  } catch(e) { /* 网络异常 */ }
-  console.warn('Cloud sync failed');
+    if (resp3.ok) {
+      var dd3 = await resp3.json();
+      applyCloudData(dd3);
+      if (si) { si.textContent = '☁️ 已同步 ' + new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}); }
+      showToast('☁️ 同步成功(CDN)', 'success');
+      return;
+    }
+  } catch(e3) {
+    console.warn('jsdelivr CDN failed:', e3.message || e3);
+  }
+
+  // 全部失败
+  if (retryCount < 2) {
+    if (si) si.textContent = '☁️ 重试中(' + (retryCount + 1) + '/2)...';
+    setTimeout(function() { downloadFromCloud(retryCount + 1); }, 2000);
+    return;
+  }
+  if (si) si.textContent = '☁️ 下载失败';
+  showToast('☁️ 同步失败，请检查网络后重试', 'error');
 }
 
 function applyCloudData(d) {
@@ -12871,40 +12929,51 @@ function applyCloudData(d) {
   if (d.schedule) { scheduleItems = d.schedule; localStorage.setItem(SCHEDULE_KEY, JSON.stringify(scheduleItems)); }
   renderAllMarkers(); renderFootprints(); updateStats();
   renderCalendar(); renderDayDetail(); updateItineraryStats(); drawRouteLine(); renderDestinations();
-  renderProjectSchedule(); // 刷新项目安排面板
+  renderProjectSchedule();
 }
 
-// 下载别名（兼容旧调用）
 function cloudLoadFootprints() { downloadFromCloud(); }
 
 async function uploadToCloud() {
   var p = prompt('请输入上传密码：');
   if (p !== 'cgc5215181') { if (p) alert('密码错误'); return; }
+
+  var ub = document.getElementById('uploadBtn');
+  if (ub) { ub.textContent = '⬆️ 上传中...'; ub.disabled = true; }
+
   try {
     var data = { footprints: footprints, itinerary: itinerary, schedule: scheduleItems, exportTime: new Date().toISOString() };
     var jsonStr = JSON.stringify(data);
-    var c = btoa(unescape(encodeURIComponent(jsonStr)));
+    var c = _base64Encode(jsonStr);
     var sha = '';
     try {
       var gr = await fetch('https://api.github.com/repos/' + _cloudRepo + '/contents/' + _cloudFile, {
-        headers: { 'Authorization': 'token ' + _cloudToken, 'Accept': 'application/vnd.github.v3+json' }
+        headers: { 'Authorization': 'token ' + _cloudToken, 'Accept': 'application/vnd.github.v3+json' },
+        signal: AbortSignal.timeout(8000)
       });
       if (gr.ok) { var ex = await gr.json(); sha = ex.sha || ''; }
-    } catch(e) {}
+    } catch(e) { console.warn('GET sha failed:', e.message); }
     var upr = await fetch('https://api.github.com/repos/' + _cloudRepo + '/contents/' + _cloudFile, {
       method: 'PUT', headers: { 'Authorization': 'token ' + _cloudToken, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: 'sync', content: c, sha: sha })
+      body: JSON.stringify({ message: 'sync', content: c, sha: sha }),
+      signal: AbortSignal.timeout(30000)
     });
-    if (upr.ok) { showToast('☁️ 上传成功', 'success'); }
-    else { throw new Error('fail'); }
-  } catch(e) { showToast('上传失败', 'error'); }
+    if (upr.ok) {
+      showToast('☁️ 上传成功', 'success');
+      var si = document.getElementById('syncIndicator');
+      if (si) si.textContent = '☁️ 已同步 ' + new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+    } else {
+      var errBody = '';
+      try { errBody = await upr.text(); } catch(e) {}
+      console.error('Upload failed:', upr.status, errBody.substring(0,200));
+      showToast('上传失败(' + upr.status + ')，请重试', 'error');
+    }
+  } catch(e) {
+    console.error('Upload error:', e.message || e);
+    showToast('上传失败，请检查网络后重试', 'error');
+  }
+  if (ub) { ub.textContent = '⬆️ 上传'; ub.disabled = false; }
 }
-
-// Update toolbar buttons
-setTimeout(function() {
-  var ub = document.getElementById('uploadBtn');
-  if (ub) { ub.textContent = '⬆️ 上传'; ub.onclick = uploadToCloud; }
-}, 2000);
 
 </script>
 
